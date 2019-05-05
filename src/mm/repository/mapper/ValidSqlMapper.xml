@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mm.repository.mapper.ValidSqlMapper">
+
+	<select id="S001" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.maaper.ValidSqlMapper.S001*/	
+     SELECT MAP_ID
+          , T_ENG_TABLE_NAME
+          , T_KOR_TABLE_NAME
+          , A_ENG_TABLE_NAME
+          , A_KOR_TABLE_NAME
+      FROM  META_TABLE_MAP
+     WHERE  T_ENG_TABLE_NAME = '${TABLE_NAME}'
+     AND    (   '%'  IN (${MAP_ID})
+             OR MAP_ID IN (${MAP_ID}))
+     AND (TRIM(T_ENG_TABLE_NAME)  IS NOT NULL  AND TRIM(T_ENG_TABLE_NAME) <> '')
+     AND (TRIM(T_KOR_TABLE_NAME)  IS NOT NULL  AND TRIM(T_KOR_TABLE_NAME) <> '')
+     AND (TRIM(A_ENG_TABLE_NAME)  IS NOT NULL  AND TRIM(A_ENG_TABLE_NAME) <> '')
+     AND (TRIM(A_KOR_TABLE_NAME)  IS NOT NULL  AND TRIM(A_KOR_TABLE_NAME) <> '')
+     GROUP
+     BY    MAP_ID
+         , T_ENG_TABLE_NAME
+         , T_KOR_TABLE_NAME
+         , A_ENG_TABLE_NAME
+         , A_KOR_TABLE_NAME
+     ORDER
+     BY    MAP_ID    
+         
+]]>
+	</select>
+	
+	
+		<select id="S002" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[
+		/* IO: mm.repository.maaper.ValidSqlMapper.S003 */	
+		SELECT ROWNUM
+		     , T_ENG_TABLE_NAME
+		     , T_KOR_TABLE_NAME
+		     , CASE WHEN ROWNUM = 1 THEN CONCAT(REPLACE(T_ENG_COLUMN_NAME,',',' ') , '/*', T_KOR_COLUMN_NAME , '*/')
+		            ELSE CONCAT(T_ENG_COLUMN_NAME , ' /* ' , T_KOR_COLUMN_NAME , '*/')
+		        END  AS    T_ENG_COLUMN_NAME
+		     , A_ENG_TABLE_NAME
+		     , CASE WHEN ROWNUM =1 THEN CONCAT(REPLACE (A_ENG_COLUMN_NAME, ',',' ') ,' /*' , A_KOR_COLUMN_NAME , '*/')
+		            ELSE CONCAT(A_ENG_COLUMN_NAME , ' /* ' , A_KOR_COLUMN_NAME , '*/')
+		        END AS A_ENG_COLUMN_NAME
+		     , T_NAME
+		     , A_KOR_TABLE_NAME
+		     , MOVE_DEFAULT
+		     , MOVE_RULE
+		 FROM  (SELECT T_ENG_TABLE_NAME AS T_ENG_TABLE_NAME
+		            , T_KOR_TABLE_NAME  AS T_KOR_TABLE_NAME
+		            , CONCAT(', ', T_ENG_COLUMN_NAME)  AS T_ENG_COLUMN_NAME
+		            , T_KOR_COLUMN_NAME  AS T_KOR_COLUMN_NAME
+		            , CONCAT('ASISUSR.',A_ENG_TABLE_NAME,'@MIGASIS_ASISSEL_LNK') AS A_ENG_TABLE_NAME
+		            , CASE WHEN T_DATA_TYPE ='DATE' AND A_DATA_TYPE <> 'TIMESTAMP' THEN  CONCAT(', TO_DATE('   ,   A_ENG_COLUMN_NAME   ,')  AS ' , A_ENG_COLUMN_NAME)
+		                   WHEN T_DATA_TYPE ='DATE' AND A_DATA_TYPE =  'TIMESTAMP' THEN  CONCAT(', TO_DATE(TO_CHAR('  , A_ENG_COLUMN_NAME  ,',''YYYYMMDD''))  AS ' ,  A_ENG_COLUMN_NAME)
+		                   ELSE CONCAT(', ', A_ENG_COLUMN_NAME)
+		               END  AS A_ENG_COLUMN_NAME  
+		            , A_KOR_COLUMN_NAME  AS A_KOR_COLUMN_NAME 
+		            , T_ENG_TABLE_NAME AS T_NAME
+		            , A_KOR_TABLE_NAME AS A_KOR_TABLE_NAME
+		            , MOVE_DEFAULT  AS  MOVE_DEFAULT
+		            , MOVE_RULE    AS  MOVE_RULE
+		           /* , (@ROW_NUMBER := @ROW_NUMBER + 1 ) 오라클에서만 되네*/
+		           , (@ROWNUM :=@ROWNUM + 1 ) AS ROWNUM		           
+		       FROM  META_TABLE_MAP
+		       WHERE MAP_ID = '${MAP_ID}'
+		       AND   A_KOR_COLUMN_NAME IS NOT NULL
+		       AND   (@ROWNUM:=0)=0
+		       ) A]]>
+	</select>
+	
+
+	
+	
+		<select id="S003" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[
+		/* IO: mm.repository.maaper.ValidSqlMapper.S003 */	
+		SELECT ROWNUM
+		     ,T_ENG_TABLE_NAME
+		     , T_KOR_TABLE_NAME
+		     , CASE WHEN ROWNUM = 1 THEN REPLACE(T_ENG_COLUMN_NAME,',',' ') || '/*'|| T_KOR_COLUMN_NAME || '*/'
+		            ELSE T_ENG_COLUMN_NAME || ' /* ' || T_KOR_COLUMN_NAME || '*/'
+		        END  AS    T_ENG_COLUMN_NAME
+		     , A_ENG_TABLE_NAME
+		     , CASE WHEN ROWNUM =1 THEN REPLACE (A_ENG_COLUMN_NAME, ',',' ') ||' /*' || A_KOR_COLUMN_NAME || '*/'
+		            ELSE A_ENG_COLUMN_NAME || ' /* ' || A_KOR_COLUMN_NAME || '*/'
+		        END AS A_ENG_COLUMN_NAME
+		     , T_NAME
+		     , A_KOR_TABLE_NAME
+		     , MOVE_DEFAULT
+		     , MOVE_RULE
+		 FROM  (SELECT T_ENG_TABLE_NAME AS T_ENG_TABLE_NAME
+		            , T_KOR_TABLE_NAME  AS T_KOR_TABLE_NAME
+		            , ', '|| T_ENG_COLUMN_NAME AS T_ENG_COLUMN_NAME
+		            , T_KOR_COLUMN_NAME  AS T_KOR_COLUMN_NAME
+		            , CONCAT('ASISUSR.',A_ENG_TABLE_NAME,'@MIGASIS_ASISSEL_LNK') AS A_ENG_TABLE_NAME
+		            , CASE WHEN T_DATA_TYPE ='DATE' AND A_DATA_TYPE <> 'TIMESTAMP' THEN  ', TO_DATE('||A_ENG_COLUMN_NAME||')  AS '|| A_ENG_COLUMN_NAME
+		                   WHEN T_DATA_TYPE ='DATE' AND A_DATA_TYPE =  'TIMESTAMP' THEN  ', TO_DATE(TO_CHAR('||A_ENG_COLUMN_NAME||',''YYYYMMDD''))  AS '|| A_ENG_COLUMN_NAME
+		                   ELSE ', '|| A_ENG_COLUMN_NAME
+		               END  AS A_ENG_COLUMN_NAME  
+		            , A_KOR_COLUMN_NAME  AS A_KOR_COLUMN_NAME 
+		            , T_ENG_TABLE_NAME AS T_NAME
+		            , A_KOR_TABLE_NAME AS A_KOR_TABLE_NAME
+		            , MOVE_DEFAULT  AS  MOVE_DEFAULT
+		            , MOVE_RULE    AS  MOVE_RULE
+		            , (@ROWNUM :=@ROWNUM + 1 ) AS ROWNUM
+		       FROM  META_TABLE_MAP
+		       WHERE MAP_ID = '${MAP_ID}'
+		       AND   A_KOR_COLUMN_NAME IS NOT NULL
+		       AND   (@ROWNUM:=0)=0
+		       ) A]]>
+	</select>
+</mapper>

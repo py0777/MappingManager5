@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mm.repository.mapper.ColChgMapper">
+<select id="S001" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.maaper.ColChgMapper.S001*/	
+SELECT B.CHNG_DT               AS CHNG_DT            
+     , B.CHNG_SEQ              AS CHNG_SEQ          
+     , B.ID                    AS ID                
+     , B.BF_MAP_SORT           AS MAP_SORT          
+     , B.BF_MAP_ID             AS MAP_ID            
+     , B.BF_T_SYSTEM_NAME      AS T_SYSTEM_NAME     
+     , B.BF_T_OWNER            AS T_OWNER           
+     , B.BF_T_ENG_TABLE_NAME   AS T_ENG_TABLE_NAME  
+     , B.BF_T_KOR_TABLE_NAME   AS T_KOR_TABLE_NAME  
+     , B.BF_T_ENG_COLUMN_NAME  AS T_ENG_COLUMN_NAME 
+     , B.BF_T_KOR_COLUMN_NAME  AS T_KOR_COLUMN_NAME 
+     , B.BF_T_DATA_TYPE        AS T_DATA_TYPE       
+     , B.BF_T_LENGTH1          AS T_LENGTH1         
+     , B.BF_T_LENGTH2          AS T_LENGTH2         
+     , B.BF_T_PK               AS T_PK              
+     , B.BF_A_SYSTEM_NAME      AS A_SYSTEM_NAME     
+     , B.BF_A_OWNER            AS A_OWNER           
+     , B.BF_A_ENG_TABLE_NAME   AS A_ENG_TABLE_NAME  
+     , B.BF_A_KOR_TABLE_NAME   AS A_KOR_TABLE_NAME  
+     , B.BF_A_ENG_COLUMN_NAME  AS A_ENG_COLUMN_NAME 
+     , B.BF_A_KOR_COLUMN_NAME  AS A_KOR_COLUMN_NAME 
+     , B.BF_A_DATA_TYPE        AS A_DATA_TYPE       
+     , B.BF_A_LENGTH1          AS A_LENGTH1         
+     , B.BF_A_LENGTH2          AS A_LENGTH2         
+     , B.BF_A_PK               AS A_PK              
+     , B.BF_MOVE_DEFAULT       AS MOVE_DEFAULT      
+     , B.BF_MOVE_YN            AS MOVE_YN           
+     , B.BF_MOVE_RULE          AS MOVE_RULE         
+     , B.BF_MOVE_SQL           AS MOVE_SQL          
+     , B.BF_ALT_EMP_NO         AS ALT_EMP_NO        
+     , B.BF_PREE_CDTN          AS PREE_CDTN         
+     , B.BF_ALT_DT             AS ALT_DT            
+     , B.BF_JOB_OWNER          AS JOB_OWNER         
+     , B.BF_CLIENT_OWNER       AS CLIENT_OWNER      
+     , B.BF_MOVE_OWNER            AS MOVE_OWNER       
+     , B.MAP_STAT              AS MAP_STAT         
+     , B.MAP_IUD_FLGCD      AS MAP_IUD_FLGCD    
+     , CASE WHEN B.MAP_STAT ='1' THEN '반영완료'
+            WHEN B.MAP_STAT ='2' THEN '신청중'
+            WHEN B.MAP_STAT ='3' THEN '반영중'
+            WHEN B.MAP_STAT ='4' THEN '반려'
+            ELSE B.MAP_STAT
+       END  MAP_STAT_NM    
+     , CASE WHEN B.MAP_IUD_FLGCD ='I' THEN '등록'
+            WHEN B.MAP_IUD_FLGCD ='U' THEN '수정'
+            WHEN B.MAP_IUD_FLGCD ='D' THEN '삭제'
+            ELSE B.MAP_IUD_FLGCD
+       END  MAP_IUD_FLGNM  
+      FROM  META_TABLE_MAP_HST B
+WHERE  MAP_STAT = (CASE WHEN '${MAP_STAT}' ='0' THEN MAP_STAT
+                        ELSE  '${MAP_STAT}'
+                    END)
+AND    DATE_FORMAT(B.CHNG_DT,'%Y%m%d') BETWEEN '${STRT_DT}' AND '${END_DT}'    
+ORDER BY B.CHNG_DT,  B.CHNG_SEQ        
+]]>
+	</select>
+	
+<select id="S002" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.maaper.ColChgMapper.S002*/	
+SELECT A.ID
+     , A.BF_CHG
+     , A.AF_CHG
+ FROM (
+		SELECT 'MAP_SORT'  AS ID
+		      ,BF_MAP_SORT AS BF_CHG
+		      ,AF_MAP_SORT AS AF_CHG
+		FROM   META_TABLE_MAP_HST
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_MAP_SORT,'') <> IFNULL( AF_MAP_SORT,'') )
+		UNION ALL
+		SELECT 'T_SYSTEM_NAME'  AS ID
+		      ,BF_T_SYSTEM_NAME AS BF_CHG
+		      ,AF_T_SYSTEM_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_SYSTEM_NAME,'') <> IFNULL(AF_T_SYSTEM_NAME,'') )
+		UNION ALL
+		SELECT 'T_OWNER'  AS ID
+		      ,BF_T_OWNER AS BF_CHG
+		      ,AF_T_OWNER AS AF_CHG
+		FROM  META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_OWNER,'') <> IFNULL(AF_T_OWNER,'') )
+		UNION ALL
+		SELECT 'T_ENG_TABLE_NAME'  AS ID
+		      ,BF_T_ENG_TABLE_NAME AS BF_CHG
+		      ,AF_T_ENG_TABLE_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_ENG_TABLE_NAME,'') <> IFNULL(AF_T_ENG_TABLE_NAME,'') )
+		UNION ALL
+		SELECT 'T_KOR_TABLE_NAME'  AS ID
+		      ,BF_T_KOR_TABLE_NAME AS BF_CHG
+		      ,AF_T_KOR_TABLE_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_KOR_TABLE_NAME,'') <> IFNULL(AF_T_KOR_TABLE_NAME,'') )
+		UNION ALL
+		SELECT 'T_ENG_COLUMN_NAME'  AS ID
+		      ,BF_T_ENG_COLUMN_NAME AS BF_CHG
+		      ,AF_T_ENG_COLUMN_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_ENG_COLUMN_NAME,'') <> IFNULL(AF_T_ENG_COLUMN_NAME,'') )
+		UNION ALL
+		SELECT 'T_KOR_COLUMN_NAME'  AS ID
+		      ,BF_T_KOR_COLUMN_NAME AS BF_CHG
+		      ,AF_T_KOR_COLUMN_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_KOR_COLUMN_NAME,'') <> IFNULL(AF_T_KOR_COLUMN_NAME,'') )
+		UNION ALL
+		SELECT 'T_DATA_TYPE'  AS ID
+		      ,BF_T_DATA_TYPE AS BF_CHG
+		      ,AF_T_DATA_TYPE AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_DATA_TYPE,'') <> IFNULL(AF_T_DATA_TYPE,'') )
+		UNION ALL
+		SELECT 'T_LENGTH1'  AS ID
+		      ,BF_T_LENGTH1 AS BF_CHG
+		      ,AF_T_LENGTH1 AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_LENGTH1,'') <> IFNULL(AF_T_LENGTH1,'') )
+		UNION ALL
+		SELECT 'T_LENGTH2'  AS ID
+		      ,BF_T_LENGTH2 AS BF_CHG
+		      ,AF_T_LENGTH2 AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_LENGTH2,'') <> IFNULL(AF_T_LENGTH2,'') )
+		UNION ALL
+		SELECT 'T_PK'  AS ID
+		      ,BF_T_PK AS BF_CHG
+		      ,AF_T_PK AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_T_PK,'') <> IFNULL(AF_T_PK,'') )
+		UNION ALL
+		SELECT 'A_SYSTEM_NAME'  AS ID
+		      ,BF_A_SYSTEM_NAME AS BF_CHG
+		      ,AF_A_SYSTEM_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_SYSTEM_NAME,'') <> IFNULL(AF_A_SYSTEM_NAME,'') )
+		UNION ALL
+		SELECT 'A_OWNER'  AS ID
+		      ,BF_A_OWNER AS BF_CHG
+		      ,AF_A_OWNER AS AF_CHG
+		FROM  META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_OWNER,'') <> IFNULL(AF_A_OWNER,'') )
+		UNION ALL
+		SELECT 'A_ENG_TABLE_NAME'  AS ID
+		      ,BF_A_ENG_TABLE_NAME AS BF_CHG
+		      ,AF_A_ENG_TABLE_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_ENG_TABLE_NAME,'') <> IFNULL(AF_A_ENG_TABLE_NAME,'') )
+		UNION ALL
+		SELECT 'A_KOR_TABLE_NAME'  AS ID
+		      ,BF_A_KOR_TABLE_NAME AS BF_CHG
+		      ,AF_A_KOR_TABLE_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_KOR_TABLE_NAME,'') <> IFNULL(AF_A_KOR_TABLE_NAME,'') )
+		UNION ALL
+		SELECT 'A_ENG_COLUMN_NAME'  AS ID
+		      ,BF_A_ENG_COLUMN_NAME AS BF_CHG
+		      ,AF_A_ENG_COLUMN_NAME AS AF_CHG
+		FROM  META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_ENG_COLUMN_NAME,'') <> IFNULL(AF_A_ENG_COLUMN_NAME,'') )
+		UNION ALL
+		SELECT 'A_KOR_COLUMN_NAME'  AS ID
+		      ,BF_A_KOR_COLUMN_NAME AS BF_CHG
+		      ,AF_A_KOR_COLUMN_NAME AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_KOR_COLUMN_NAME,'') <> IFNULL(AF_A_KOR_COLUMN_NAME,'') )
+		UNION ALL
+		SELECT 'A_DATA_TYPE'  AS ID
+		      ,BF_A_DATA_TYPE AS BF_CHG
+		      ,AF_A_DATA_TYPE AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_DATA_TYPE,'') <> IFNULL(AF_A_DATA_TYPE,'') )
+		UNION ALL
+		SELECT 'A_LENGTH1'  AS ID
+		      ,BF_A_LENGTH1 AS BF_CHG
+		      ,AF_A_LENGTH1 AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_LENGTH1,'') <> IFNULL(AF_A_LENGTH1,'') )
+		UNION ALL
+		SELECT 'A_LENGTH2'  AS ID
+		      ,BF_A_LENGTH2 AS BF_CHG
+		      ,AF_A_LENGTH2 AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ} 
+		  AND  (IFNULL(BF_A_LENGTH2,'') <> IFNULL(AF_A_LENGTH2,'') )
+		UNION ALL
+		SELECT 'A_PK'  AS ID
+		      ,BF_A_PK AS BF_CHG
+		      ,AF_A_PK AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_A_PK,'') <> IFNULL(AF_A_PK,'') )
+		UNION ALL
+		SELECT 'MOVE_DEFAULT'  AS ID
+		      ,BF_MOVE_DEFAULT AS BF_CHG
+		      ,AF_MOVE_DEFAULT AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_MOVE_DEFAULT,'') <> IFNULL(AF_MOVE_DEFAULT,'') )
+		UNION ALL
+		SELECT 'MOVE_YN'  AS ID
+		      ,BF_MOVE_YN AS BF_CHG
+		      ,AF_MOVE_YN AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_MOVE_YN,'') <> IFNULL(AF_MOVE_YN,'') )
+		UNION ALL
+		SELECT 'MOVE_RULE'  AS ID
+		      ,BF_MOVE_RULE AS BF_CHG
+		      ,AF_MOVE_RULE AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_MOVE_RULE,'') <> IFNULL(AF_MOVE_RULE,'') )
+		UNION ALL
+		SELECT 'MOVE_SQL'  AS ID
+		      ,BF_MOVE_SQL AS BF_CHG
+		      ,AF_MOVE_SQL AS AF_CHG
+		FROM  META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_MOVE_SQL,'') <> IFNULL(AF_MOVE_SQL,'') )
+		UNION ALL
+		SELECT 'PREE_CDTN'  AS ID
+		      ,BF_PREE_CDTN AS BF_CHG
+		      ,AF_PREE_CDTN AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_PREE_CDTN,'') <> IFNULL(AF_PREE_CDTN,'') )
+		UNION ALL
+		SELECT 'JOB_OWNER'  AS ID
+		      ,BF_JOB_OWNER AS BF_CHG
+		      ,AF_JOB_OWNER AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_JOB_OWNER,'') <> IFNULL(AF_JOB_OWNER,'') )
+		UNION ALL
+		SELECT 'CLIENT_OWNER'  AS ID
+		      ,BF_CLIENT_OWNER AS BF_CHG
+		      ,AF_CLIENT_OWNER AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_CLIENT_OWNER,'') <> IFNULL(AF_CLIENT_OWNER,'') )
+		UNION ALL
+		SELECT 'MOVE_OWNER'  AS ID
+		      ,BF_MOVE_OWNER AS BF_CHG
+		      ,AF_MOVE_OWNER AS AF_CHG
+		FROM   META_TABLE_MAP_HST 
+		WHERE  ID = ID
+		  AND  CHNG_DT = '${CHNG_DT}'
+		  AND  CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IFNULL(BF_MOVE_OWNER,'') <> IFNULL(AF_MOVE_OWNER,'') )
+ ) A 
+     ]]>
+	</select>		
+	
+	
+<!--  
+<select id="S002" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.maaper.ColChgMapper.S002*/	
+SELECT A.ID
+     , A.BF_CHG
+     , A.AF_CHG
+ FROM (
+		SELECT 'MAP_SORT'  AS ID
+		      ,IA.MAP_SORT AS BF_CHG
+		      ,IB.MAP_SORT AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.MAP_SORT <> IB.MAP_SORT OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_SYSTEM_NAME'  AS ID
+		      ,IA.T_SYSTEM_NAME AS BF_CHG
+		      ,IB.T_SYSTEM_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_SYSTEM_NAME <> IB.T_SYSTEM_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_OWNER'  AS ID
+		      ,IA.T_OWNER AS BF_CHG
+		      ,IB.T_OWNER AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_OWNER <> IB.T_OWNER OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_ENG_TABLE_NAME'  AS ID
+		      ,IA.T_ENG_TABLE_NAME AS BF_CHG
+		      ,IB.T_ENG_TABLE_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_ENG_TABLE_NAME <> IB.T_ENG_TABLE_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_KOR_TABLE_NAME'  AS ID
+		      ,IA.T_KOR_TABLE_NAME AS BF_CHG
+		      ,IB.T_KOR_TABLE_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_KOR_TABLE_NAME <> IB.T_KOR_TABLE_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_ENG_COLUMN_NAME'  AS ID
+		      ,IA.T_ENG_COLUMN_NAME AS BF_CHG
+		      ,IB.T_ENG_COLUMN_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_ENG_COLUMN_NAME <> IB.T_ENG_COLUMN_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_KOR_COLUMN_NAME'  AS ID
+		      ,IA.T_KOR_COLUMN_NAME AS BF_CHG
+		      ,IB.T_KOR_COLUMN_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_KOR_COLUMN_NAME <> IB.T_KOR_COLUMN_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_DATA_TYPE'  AS ID
+		      ,IA.T_DATA_TYPE AS BF_CHG
+		      ,IB.T_DATA_TYPE AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_DATA_TYPE <> IB.T_DATA_TYPE OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_LENGTH1'  AS ID
+		      ,IA.T_LENGTH1 AS BF_CHG
+		      ,IB.T_LENGTH1 AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_LENGTH1 <> IB.T_LENGTH1 OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_LENGTH2'  AS ID
+		      ,IA.T_LENGTH2 AS BF_CHG
+		      ,IB.T_LENGTH2 AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_LENGTH2 <> IB.T_LENGTH2 OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'T_PK'  AS ID
+		      ,IA.T_PK AS BF_CHG
+		      ,IB.T_PK AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.T_PK <> IB.T_PK OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_SYSTEM_NAME'  AS ID
+		      ,IA.A_SYSTEM_NAME AS BF_CHG
+		      ,IB.A_SYSTEM_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_SYSTEM_NAME <> IB.A_SYSTEM_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_OWNER'  AS ID
+		      ,IA.A_OWNER AS BF_CHG
+		      ,IB.A_OWNER AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_OWNER <> IB.A_OWNER OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_ENG_TABLE_NAME'  AS ID
+		      ,IA.A_ENG_TABLE_NAME AS BF_CHG
+		      ,IB.A_ENG_TABLE_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_ENG_TABLE_NAME <> IB.A_ENG_TABLE_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_KOR_TABLE_NAME'  AS ID
+		      ,IA.A_KOR_TABLE_NAME AS BF_CHG
+		      ,IB.A_KOR_TABLE_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_KOR_TABLE_NAME <> IB.A_KOR_TABLE_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_ENG_COLUMN_NAME'  AS ID
+		      ,IA.A_ENG_COLUMN_NAME AS BF_CHG
+		      ,IB.A_ENG_COLUMN_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_ENG_COLUMN_NAME <> IB.A_ENG_COLUMN_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_KOR_COLUMN_NAME'  AS ID
+		      ,IA.A_KOR_COLUMN_NAME AS BF_CHG
+		      ,IB.A_KOR_COLUMN_NAME AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_KOR_COLUMN_NAME <> IB.A_KOR_COLUMN_NAME OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_DATA_TYPE'  AS ID
+		      ,IA.A_DATA_TYPE AS BF_CHG
+		      ,IB.A_DATA_TYPE AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_DATA_TYPE <> IB.A_DATA_TYPE OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_LENGTH1'  AS ID
+		      ,IA.A_LENGTH1 AS BF_CHG
+		      ,IB.A_LENGTH1 AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_LENGTH1 <> IB.A_LENGTH1 OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_LENGTH2'  AS ID
+		      ,IA.A_LENGTH2 AS BF_CHG
+		      ,IB.A_LENGTH2 AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ} 
+		  AND  (IA.A_LENGTH2 <> IB.A_LENGTH2 OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'A_PK'  AS ID
+		      ,IA.A_PK AS BF_CHG
+		      ,IB.A_PK AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.A_PK <> IB.A_PK OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'MOVE_DEFAULT'  AS ID
+		      ,IA.MOVE_DEFAULT AS BF_CHG
+		      ,IB.MOVE_DEFAULT AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.MOVE_DEFAULT <> IB.MOVE_DEFAULT OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'MOVE_YN'  AS ID
+		      ,IA.MOVE_YN AS BF_CHG
+		      ,IB.MOVE_YN AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.MOVE_YN <> IB.MOVE_YN OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'MOVE_RULE'  AS ID
+		      ,IA.MOVE_RULE AS BF_CHG
+		      ,IB.MOVE_RULE AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.MOVE_RULE <> IB.MOVE_RULE OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'MOVE_SQL'  AS ID
+		      ,IA.MOVE_SQL AS BF_CHG
+		      ,IB.MOVE_SQL AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.MOVE_SQL <> IB.MOVE_SQL OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'PREE_CDTN'  AS ID
+		      ,IA.PREE_CDTN AS BF_CHG
+		      ,IB.PREE_CDTN AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.PREE_CDTN <> IB.PREE_CDTN OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'JOB_OWNER'  AS ID
+		      ,IA.JOB_OWNER AS BF_CHG
+		      ,IB.JOB_OWNER AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.JOB_OWNER <> IB.JOB_OWNER OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'CLIENT_OWNER'  AS ID
+		      ,IA.CLIENT_OWNER AS BF_CHG
+		      ,IB.CLIENT_OWNER AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.CLIENT_OWNER <> IB.CLIENT_OWNER OR IB.MAP_IUD_FLGCD ='I')
+		UNION ALL
+		SELECT 'MOVE_OWNER'  AS ID
+		      ,IA.MOVE_OWNER AS BF_CHG
+		      ,IB.MOVE_OWNER AS AF_CHG
+		FROM   META_TABLE_MAP IA 
+		      ,META_TABLE_MAP_CRR IB
+		WHERE  IA.ID = IB.ID
+		  AND  IB.CHNG_DT = '${CHNG_DT}'
+		  AND  IB.CHNG_SEQ = ${CHNG_SEQ}
+		  AND  (IA.MOVE_OWNER <> IB.MOVE_OWNER OR IB.MAP_IUD_FLGCD ='I')
+ ) A   
+     ]]>
+	</select>	
+-->
+
+<select id="S003" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.maaper.ColChgMapper.S003*/
+SELECT CHNG_DT
+     , CHNG_SEQ
+     , ID
+     , AF_MAP_SORT            AS MAP_SORT          
+     , AF_MAP_ID              AS MAP_ID            
+     , AF_T_SYSTEM_NAME       AS T_SYSTEM_NAME     
+     , AF_T_OWNER             AS T_OWNER           
+     , AF_T_ENG_TABLE_NAME    AS T_ENG_TABLE_NAME  
+     , AF_T_KOR_TABLE_NAME    AS T_KOR_TABLE_NAME  
+     , AF_T_ENG_COLUMN_NAME   AS T_ENG_COLUMN_NAME 
+     , AF_T_KOR_COLUMN_NAME   AS T_KOR_COLUMN_NAME 
+     , AF_T_DATA_TYPE         AS T_DATA_TYPE       
+     , AF_T_LENGTH1           AS T_LENGTH1         
+     , AF_T_LENGTH2           AS T_LENGTH2         
+     , AF_T_PK                AS T_PK              
+     , AF_A_SYSTEM_NAME       AS A_SYSTEM_NAME     
+     , AF_A_OWNER             AS A_OWNER           
+     , AF_A_ENG_TABLE_NAME    AS A_ENG_TABLE_NAME  
+     , AF_A_KOR_TABLE_NAME    AS A_KOR_TABLE_NAME  
+     , AF_A_ENG_COLUMN_NAME   AS A_ENG_COLUMN_NAME 
+     , AF_A_KOR_COLUMN_NAME   AS A_KOR_COLUMN_NAME 
+     , AF_A_DATA_TYPE         AS A_DATA_TYPE       
+     , AF_A_LENGTH1           AS A_LENGTH1         
+     , AF_A_LENGTH2           AS A_LENGTH2         
+     , AF_A_PK                AS A_PK              
+     , AF_MOVE_DEFAULT        AS MOVE_DEFAULT      
+     , AF_MOVE_YN             AS MOVE_YN           
+     , AF_MOVE_RULE           AS MOVE_RULE         
+     , AF_MOVE_SQL            AS MOVE_SQL          
+     , AF_ALT_EMP_NO          AS ALT_EMP_NO        
+     , AF_PREE_CDTN           AS PREE_CDTN         
+     , AF_ALT_DT              AS ALT_DT            
+     , AF_JOB_OWNER           AS JOB_OWNER         
+     , AF_CLIENT_OWNER        AS CLIENT_OWNER      
+     , AF_MOVE_OWNER          AS MOVE_OWNER        
+     , MAP_STAT
+     , MAP_IUD_FLGCD
+  FROM META_TABLE_MAP_HST
+  WHERE CHNG_DT ='${CHNG_DT}'
+  AND  CHNG_SEQ ='${CHNG_SEQ}'     		
+      ]]>
+	</select>	
+<update id="U001" parameterType="map" ><![CDATA[
+UPDATE /*mm.repository.mapper.ColChgMapper.U001*/
+       META_TABLE_MAP
+SET    MAP_SORT          = IFNULL( ${MAP_SORT}           ,MAP_SORT           ) 
+     , MAP_ID            = IFNULL( #{MAP_ID}            ,MAP_ID             ) 
+     , T_SYSTEM_NAME     = IFNULL( #{T_SYSTEM_NAME}     ,T_SYSTEM_NAME      ) 
+     , T_OWNER           = IFNULL( #{T_OWNER}           ,T_OWNER            ) 
+     , T_ENG_TABLE_NAME  = IFNULL( #{T_ENG_TABLE_NAME}  ,T_ENG_TABLE_NAME   ) 
+     , T_KOR_TABLE_NAME  = IFNULL( #{T_KOR_TABLE_NAME}  ,T_KOR_TABLE_NAME   ) 
+     , T_ENG_COLUMN_NAME = IFNULL( #{T_ENG_COLUMN_NAME} ,T_ENG_COLUMN_NAME  ) 
+     , T_KOR_COLUMN_NAME = IFNULL( #{T_KOR_COLUMN_NAME} ,T_KOR_COLUMN_NAME  ) 
+     , T_DATA_TYPE       = IFNULL( #{T_DATA_TYPE}       ,T_DATA_TYPE        ) 
+     , T_LENGTH1         = IFNULL( #{T_LENGTH1}         ,T_LENGTH1          ) 
+     , T_LENGTH2         = IFNULL( #{T_LENGTH2}         ,T_LENGTH2          ) 
+     , T_PK              = IFNULL( #{T_PK}              ,T_PK               ) 
+     , A_SYSTEM_NAME     = IFNULL( #{A_SYSTEM_NAME}     ,A_SYSTEM_NAME      ) 
+     , A_OWNER           = IFNULL( #{A_OWNER}           ,A_OWNER            ) 
+     , A_ENG_TABLE_NAME  = IFNULL( #{A_ENG_TABLE_NAME}  ,A_ENG_TABLE_NAME   ) 
+     , A_KOR_TABLE_NAME  = IFNULL( #{A_KOR_TABLE_NAME}  ,A_KOR_TABLE_NAME   ) 
+     , A_ENG_COLUMN_NAME = IFNULL( #{A_ENG_COLUMN_NAME} ,A_ENG_COLUMN_NAME  ) 
+     , A_KOR_COLUMN_NAME = IFNULL( #{A_KOR_COLUMN_NAME} ,A_KOR_COLUMN_NAME  ) 
+     , A_DATA_TYPE       = IFNULL( #{A_DATA_TYPE}       ,A_DATA_TYPE        ) 
+     , A_LENGTH1         = IFNULL( #{A_LENGTH1}         ,A_LENGTH1          ) 
+     , A_LENGTH2         = IFNULL( #{A_LENGTH2}         ,A_LENGTH2          ) 
+     , A_PK              = IFNULL( #{A_PK}              ,A_PK               ) 
+     , MOVE_DEFAULT      = IFNULL( #{MOVE_DEFAULT}      ,MOVE_DEFAULT       ) 
+     , MOVE_YN           = IFNULL( #{MOVE_YN}           ,MOVE_YN            ) 
+     , MOVE_RULE         = IFNULL( #{MOVE_RULE}         ,MOVE_RULE          ) 
+     , MOVE_SQL          = IFNULL( #{MOVE_SQL}          ,MOVE_SQL           ) 
+     , ALT_EMP_NO        = IFNULL( #{ALT_EMP_NO}        ,ALT_EMP_NO         ) 
+     , PREE_CDTN         = IFNULL( #{PREE_CDTN}         ,PREE_CDTN          ) 
+     , ALT_DT            = IFNULL( #{ALT_DT}            ,ALT_DT             ) 
+     , JOB_OWNER         = IFNULL( #{JOB_OWNER}         ,JOB_OWNER          ) 
+     , CLIENT_OWNER      = IFNULL( #{CLIENT_OWNER}      ,CLIENT_OWNER       ) 
+     , MOVE_OWNER        = IFNULL( #{MOVE_OWNER}        ,MOVE_OWNER         ) 
+     , MAP_STAT          = IFNULL( #{MAP_STAT}          ,MAP_STAT           ) 
+     , MAP_IUD_FLGCD     = IFNULL( #{MAP_IUD_FLGCD}     ,MAP_IUD_FLGCD      )
+WHERE ID   = ${ID}
+
+]]>
+</update>  
+
+<update id="U002" parameterType="map" ><![CDATA[
+UPDATE /*mm.repository.mapper.ColChgMapper.U002*/
+       META_TABLE_MAP_HST
+SET    MAP_STAT          = IFNULL('${MAP_STAT}'         ,MAP_STAT         ) 
+  WHERE CHNG_DT ='${CHNG_DT}'
+  AND  CHNG_SEQ ='${CHNG_SEQ}'   
+
+]]>
+</update>  
+
+
+
+<delete id="D001" parameterType="map" ><![CDATA[
+DELETE /*mm.repository.mapper.ColChgMapper.D001*/
+  FROM  META_TABLE_MAP
+ WHERE  ID   = ${ID}  
+
+]]>
+	</delete>   
+</mapper>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="utf-8">
+      <title>1. Basic</title>
+       <link rel="stylesheet" type="text/css" href="./css/tui-example-style.css" />
+       <link rel="stylesheet" type="text/css" href="./lib/tui-grid/dist/tui-grid.css" /> 
+       <style>
+       		input.uppercase{
+       		text-transform: uppercase;
+       		}
+       </style>
+  
+  </head>
+
+  <body>
+    <div class="description">
+    
+    
+    </div>
+    
+    <div class="code-html contents">
+   	  <div class="preset">
+   	         <label><strong>TOBE테이블ID</strong></label>
+			 <input  id="TABLE_NAME" type="text"  class="uppercase" oninput="this.value=this.value.toUpperCase()" onkeypress="if( event.keyCode==13 ){$('.btn-load').click();}"/>
+             <button class="btn-load" id="btn-load">검증SQL생성</button>
+      </div>
+      <br></br>
+      <div id="grid" ></div>
+      <p> 검증SQL</p>
+      <TEXTAREA id="validSql" name="validSql" rows="20" style="WIDTH: 100%"></textarea> 
+      
+    </div>
+  </body>
+  
+  
+  <script type="text/javascript" src="./lib/jquery/dist/jquery.js"></script>
+   <script type="text/javascript" src="./lib/underscore/underscore.js"></script>
+  <script type="text/javascript" src="./lib/backbone/backbone.js"></script>
+  <script type="text/javascript" src="./lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+  <script type="text/javascript" src="./lib/tui-pagination/dist/tui-pagination.js"></script>
+ 
+  <script type="text/javascript" src="./lib/tui-grid/dist/tui-grid.js"></script>
+
+  <script type="text/javascript" class="code-js">
+  var grid = new tui.Grid({
+      el: $('#grid'),
+     
+      scrollX: false,
+      scrollY: true,
+      rowHeaders:['checkbox'],
+      header: {
+          height : 50,
+          complexColumns: [
+              {
+                  title: '매핑정보',
+                  name: 'mergeColumn1',
+                  childNames: [ 'MAP_ID','T_ENG_TABLE_NAME', 'T_KOR_TABLE_NAME', 'A_ENG_TABLE_NAME', 'A_KOR_TABLE_NAME']
+              }
+          ]
+      },
+      columns: [  
+          {
+              title: 'MAP_ID',
+              name: 'MAP_ID'
+          },
+          {
+              title: 'TOBE테이블',
+              name: 'T_ENG_TABLE_NAME'
+          },
+
+          {
+              title: 'TOBE테이블한글',
+              name: 'T_KOR_TABLE_NAME'
+          },
+          {
+              title: 'ASIS테이블',
+              name: 'A_ENG_TABLE_NAME'
+          },
+          {
+              title: 'ASIS테이블한글',
+              name: 'A_KOR_TABLE_NAME'
+          }
+      ]
+  });
+    
+  grid.on('click', function() {
+	    console.log('clicked!!');
+	}).on('dblclick', function() {
+	    console.log('double clicked!!');
+	});
+
+	// Bind event handlers
+	grid.on('beforeRequest', function(data) {
+	    // For all requests
+	
+	}).on('response', ev => {
+		  const {
+			    responseData,
+			    requestType
+			  } = ev;
+		 		 
+		
+	}).on('successResponse', function(data) {
+	    // Only if response.result is true
+		console.log(data);
+	}).on('failResponse', function(data) {
+	    // Only if response.result is false
+	    console.log(data);
+		//console.log('failResponse');
+	}).on('errorResponse', function(data) {
+	    // For error response
+		console.log('errorResponse');
+	});
+    
+    $('#btn-load').on('click', function() {
+    	
+    	var mapList = [];
+    	var Prams = '';
+    	
+    	for(var i = 0; i < grid.getCheckedRowKeys().length; i++){
+    		mapList[i]= grid.getValue(grid.getCheckedRowKeys()[i], 'MAP_ID');
+    	}
+    	
+    	grid.refreshLayout();
+    	Prams +='&MAP_ID='+ mapList;
+    	Prams +='&TABLE_NAME='+$('#TABLE_NAME').val().replace(/\n/g," ");  /*개행문자 처리 필요*/
+    	
+    	$.ajax({
+            url:"./resources/restapi/preServ",
+            type:'POST',
+            headers: { 'trid': 'validSql' ,'fncd':'RA'},
+            
+            data: Prams,
+            success:function(data){
+            	alert(data.RESULT);
+            	$('#validSql').val(data.RESULT);
+         		grid.setData(data.rsTblRtn);
+        		grid.checkAll();
+        		if(data.RSCNT > 5){
+        			grid.setBodyHeight(200);
+        		}
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+                self.close();
+            }
+        });  
+    	  
+    });
+    
+  </script>
+   
+
+</html>

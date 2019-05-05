@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="utf-8">
+      <title>12. Using whiteSpace option</title>
+       <link rel="stylesheet" type="text/css" href="./css/tui-example-style.css" />
+       <link rel="stylesheet" type="text/css" href="./css/py0777.css" />
+       <link rel="stylesheet" type="text/css" href="./lib/tui-grid/dist/tui-grid.css" />
+       <style>
+		input.uppercase{
+       		text-transform: uppercase;
+       		}      
+      </style>
+  </head>
+
+  <body>
+	  <div id="wrapper">
+	     <div id="header">		     
+   	         <label><strong>TOBE테이블ID</strong></label>
+			 <input  id="TABLE_NAME" type="text" class="uppercase" oninput="this.value=this.value.toUpperCase()" onkeypress="if( event.keyCode==13 ){$('.btn-search').click();}"/>
+             <button class="btn-search" id="btn-search">MAP_ID조회</button>      
+	     </div>
+	     <div align="right" class="header">
+	              <button class="btn-addRow" >행추가</button>
+	              <button class="btn-delRow" >행삭제</button>
+	              <button class="btn-load">저장</button>
+	     </div>
+	      
+	     <div class="container" > 
+		      <div id="map_grid"></div>
+		      <div id="grid"></div>
+	     </div>
+
+	    </div> 
+	    
+     </div>
+  </body>
+  <script type="text/javascript" src="./lib/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="./lib/underscore/underscore.js"></script>
+  <script type="text/javascript" src="./lib/backbone/backbone.js"></script>
+  <script type="text/javascript" src="./lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+  <script type="text/javascript" src="./lib/tui-pagination/dist/tui-pagination.js"></script>
+
+  <script type="text/javascript" src="./lib/tui-grid/dist/tui-grid.js"></script>
+  
+  <script type="text/javascript" class="code-js">
+
+  var map_grid = new tui.Grid({
+      el: $('#map_grid'),
+     
+      scrollX: false,
+      scrollY: true,
+      rowHeaders:['checkbox'],
+      header: {
+          height : 50,
+          complexColumns: [
+              {
+                  title: '매핑정보',
+                  name: 'mergeColumn1',
+                  childNames: [ 'MAP_ID','T_ENG_TABLE_NAME', 'T_KOR_TABLE_NAME', 'A_ENG_TABLE_NAME', 'A_KOR_TABLE_NAME']
+              }
+          ]
+      },
+      columns: [  
+          {
+              title: 'MAP_ID',
+              name: 'MAP_ID'
+          },
+          {
+              title: 'TOBE테이블',
+              name: 'T_ENG_TABLE_NAME'
+          },
+
+          {
+              title: 'TOBE테이블한글',
+              name: 'T_KOR_TABLE_NAME'
+          },
+          {
+              title: 'ASIS테이블',
+              name: 'A_ENG_TABLE_NAME'
+          },
+          {
+              title: 'ASIS테이블한글',
+              name: 'A_KOR_TABLE_NAME'
+          }
+      ]
+  });
+  
+  
+  var grid = new tui.Grid({
+      el: $('#grid'),
+      scrollX: false,
+      scrollY: true,
+      bodyHeight : 800,
+      rowHeaders:['rowNum','checkbox'],
+      columns: [
+{title:'ID'                 , name:'ID'                 },
+{title:'MAP_SORT'           , name:'MAP_SORT'           ,editOptions:{type:'text',useViewMode:true}},
+{title:'MAP_ID'             , name:'MAP_ID'             ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_SYSTEM_NAME'      , name:'T_SYSTEM_NAME'      ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_OWNER'            , name:'T_OWNER'            ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_ENG_TABLE_NAME'   , name:'T_ENG_TABLE_NAME'   ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_KOR_TABLE_NAME'   , name:'T_KOR_TABLE_NAME'   ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_ENG_COLUMN_NAME'  , name:'T_ENG_COLUMN_NAME'  ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_KOR_COLUMN_NAME'  , name:'T_KOR_COLUMN_NAME'  ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_DATA_TYPE'        , name:'T_DATA_TYPE'        ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_LENGTH1'          , name:'T_LENGTH1'          ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_LENGTH2'          , name:'T_LENGTH2'          ,editOptions:{type:'text',useViewMode:true}},
+{title:'T_PK'               , name:'T_PK'               ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_SYSTEM_NAME'      , name:'A_SYSTEM_NAME'      ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_OWNER'            , name:'A_OWNER'            ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_ENG_TABLE_NAME'   , name:'A_ENG_TABLE_NAME'   ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_KOR_TABLE_NAME'   , name:'A_KOR_TABLE_NAME'   ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_ENG_COLUMN_NAME'  , name:'A_ENG_COLUMN_NAME'  ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_KOR_COLUMN_NAME'  , name:'A_KOR_COLUMN_NAME'  ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_DATA_TYPE'        , name:'A_DATA_TYPE'        ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_LENGTH1'          , name:'A_LENGTH1'          ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_LENGTH2'          , name:'A_LENGTH2'          ,editOptions:{type:'text',useViewMode:true}},
+{title:'A_PK'               , name:'A_PK'               ,editOptions:{type:'text',useViewMode:true}},
+{title:'MOVE_DEFAULT'       , name:'MOVE_DEFAULT'       ,editOptions:{type:'text',useViewMode:true}},
+{title:'MOVE_YN'            , name:'MOVE_YN'            ,editOptions:{type:'text',useViewMode:true}},
+{title:'MOVE_RULE'          , name:'MOVE_RULE'          ,editOptions:{type:'text',useViewMode:true}},
+{title:'MOVE_SQL'           , name:'MOVE_SQL'           ,editOptions:{type:'text',useViewMode:true}},
+{title:'ALT_EMP_NO'         , name:'ALT_EMP_NO'         ,editOptions:{type:'text',useViewMode:true}},
+{title:'PREE_CDTN'          , name:'PREE_CDTN'          ,editOptions:{type:'text',useViewMode:true}},
+{title:'ALT_DT'             , name:'ALT_DT'             ,editOptions:{type:'text',useViewMode:true}},
+{title:'JOB_OWNER'          , name:'JOB_OWNER'          ,editOptions:{type:'text',useViewMode:true}},
+{title:'CLIENT_OWNER'       , name:'CLIENT_OWNER'       ,editOptions:{type:'text',useViewMode:true}},
+{title:'MOVE_OWNER'         , name:'MOVE_OWNER'         ,editOptions:{type:'text',useViewMode:true}}
+
+      ]
+  })
+
+  grid.hideColumn('ID')
+    //Bind event handlers
+	grid.on('beforeRequest', function(data) {
+	    // For all requests
+	    console.log(data);
+		
+	}).on('response', ev => {
+		  const {
+			    responseData,
+			    requestType
+			  } = ev;
+		
+	}).on('successResponse', function(data) {
+	    // Only if response.result is true
+		console.log(data);
+	}).on('failResponse', function(data) {
+	    // Only if response.result is false
+	    console.log(data);
+		//console.log('failResponse');
+	}).on('errorResponse', function(data) {
+	    // For error response
+		console.log('errorResponse');
+	});
+  
+  function removeRows(rowKeys) {
+      _.each(rowKeys, function(rowKey) {
+          grid.removeRow(rowKey);
+      });
+  }
+
+  $('.btn-addRow').click(function() {
+	  grid.appendRow();	
+  });
+  $('.btn-delRow').click(function() {
+	  var rowKeys = grid.getCheckedRowKeys();
+      removeRows(rowKeys);
+  });
+  
+ 
+   
+    /*ajax를 이용한 그리드 조회 구현
+      grid.setData는 Array를 파라미터로 받고 있어서 서비스에서 json으로 던진 값을 변환해줘야 함
+    */
+	$('#btn-search').on('click', function() {
+    	
+    	var mapList = [];
+    	var Prams = '';
+    	
+    	for(var i = 0; i < map_grid.getCheckedRowKeys().length; i++){
+    		mapList[i]= map_grid.getValue(map_grid.getCheckedRowKeys()[i], 'MAP_ID');
+    	}
+    	
+    	map_grid.clear();
+    	grid.clear(); 
+    	Prams +='&MAP_ID='+ mapList;
+    	Prams +='&TABLE_NAME='+$('#TABLE_NAME').val().replace(/\n/g," ");  /*개행문자 처리 필요*/
+    	
+    	$.ajax({
+            url:"./resources/restapi/preServ",
+            type:'POST',
+            headers: { 'trid': 'upDef' ,'fncd':'RA'},
+            
+            data: Prams,
+            success:function(data){
+            	map_grid.setData(data.rsMapRtn);
+            	map_grid.checkAll();
+            	grid.setData(data.rsTblRtn);
+        		if(data.RSCNT > 5){
+        			map_grid.setBodyHeight(200);
+        		}
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+                self.close();
+            }
+        });  
+    	  
+    });
+    
+    $('.btn-load').click(function() {
+    	var optionsOpt = {rowKeyOnly: false};
+    	var modifiedRowsInfo = grid.getModifiedRows(optionsOpt);
+		var createdRowsLength = modifiedRowsInfo.createdRows.length;
+		var updatedRowsLength = modifiedRowsInfo.updatedRows.length;
+		var deletedRowsLength = modifiedRowsInfo.deletedRows.length
+		if(!confirm("변경사항을 확인하세요 \n" +'등록 : ['+ createdRowsLength + "] 수정: ["+updatedRowsLength +"] 삭제: ["+deletedRowsLength+"]")){
+			alert("취소버튼을 선택하셨습니다.");
+			return;
+		}
+    	
+		if(createdRowsLength + updatedRowsLength + deletedRowsLength == 0){
+			alert("변경사항이 없습니다.");
+			return;
+		}
+    	$.ajax({
+            url:"./resources/restapi/preServ",
+            type:'POST',
+            headers: { 'trid': 'upDef' ,'fncd':'CA'},
+            //data:modifiedRowsInfo,
+            data: modifiedRowsInfo,
+            success:function(data){
+            	alert("성공~~ \n");
+            	$('.btn-search').click();
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+                self.close();
+            }
+        });  
+    	  
+      });
+  </script>
+</html>

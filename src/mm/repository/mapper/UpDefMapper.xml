@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mm.repository.mapper.UpDefMapper">
+
+<select id="S001" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.mapper.UpDefMapper.S001*/	
+     SELECT ID
+        , MAP_SORT  
+		, MAP_ID           
+		, T_SYSTEM_NAME    
+		, T_OWNER          
+		, T_ENG_TABLE_NAME 
+		, T_KOR_TABLE_NAME 
+		, T_ENG_COLUMN_NAME
+		, T_KOR_COLUMN_NAME
+		, T_DATA_TYPE      
+		, T_LENGTH1        
+		, T_LENGTH2        
+		, T_PK             
+		, A_SYSTEM_NAME    
+		, A_OWNER          
+		, A_ENG_TABLE_NAME 
+		, A_KOR_TABLE_NAME 
+		, A_ENG_COLUMN_NAME
+		, A_KOR_COLUMN_NAME
+		, A_DATA_TYPE      
+		, A_LENGTH1        
+		, A_LENGTH2        
+		, A_PK             
+		, MOVE_DEFAULT     
+		, MOVE_YN          
+		, MOVE_RULE        
+		, MOVE_SQL         
+		, ALT_EMP_NO       
+		, PREE_CDTN        
+		, ALT_DT           
+		, JOB_OWNER        
+		, CLIENT_OWNER     
+		, MOVE_OWNER 
+		, MAP_STAT
+		, MAP_IUD_FLGCD
+      FROM  META_TABLE_MAP
+      WHERE MAP_ID IN (${MAP_ID})
+         
+]]>
+	</select>
+
+	<select id="S002" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.maaper.UpDefMapper.S002*/	
+     SELECT MAP_ID
+          , T_ENG_TABLE_NAME
+          , T_KOR_TABLE_NAME
+          , A_ENG_TABLE_NAME
+          , A_KOR_TABLE_NAME
+      FROM  META_TABLE_MAP
+     WHERE  T_ENG_TABLE_NAME = '${TABLE_NAME}'
+     AND    (   '%'  IN (${MAP_ID})
+             OR MAP_ID IN (${MAP_ID}))
+     AND (TRIM(T_ENG_TABLE_NAME)  IS NOT NULL  AND TRIM(T_ENG_TABLE_NAME) <> '')
+     AND (TRIM(T_KOR_TABLE_NAME)  IS NOT NULL  AND TRIM(T_KOR_TABLE_NAME) <> '')
+     AND (TRIM(A_ENG_TABLE_NAME)  IS NOT NULL  AND TRIM(A_ENG_TABLE_NAME) <> '')
+     AND (TRIM(A_KOR_TABLE_NAME)  IS NOT NULL  AND TRIM(A_KOR_TABLE_NAME) <> '')
+     GROUP
+     BY    MAP_ID
+         , T_ENG_TABLE_NAME
+         , T_KOR_TABLE_NAME
+         , A_ENG_TABLE_NAME
+         , A_KOR_TABLE_NAME
+     ORDER
+     BY    MAP_ID    
+         
+]]>
+	</select>
+	
+	<select id="S003" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.maaper.UpDefMapper.S002*/	
+     SELECT MAP_ID
+          , ID
+      FROM  META_TABLE_MAP
+     WHERE  MAP_SORT = ${MAP_SORT}
+     AND    MAP_ID = '${MAP_ID}'
+         
+]]>
+	</select>	
+
+
+<select id="S004" parameterType="map" resultType="java.util.HashMap" fetchSize="50" ><![CDATA[		
+     /* IO: mm.repository.mapper.UpDefMapper.S004*/	
+     SELECT ID
+        , MAP_SORT  
+		, MAP_ID           
+		, T_SYSTEM_NAME    
+		, T_OWNER          
+		, T_ENG_TABLE_NAME 
+		, T_KOR_TABLE_NAME 
+		, T_ENG_COLUMN_NAME
+		, T_KOR_COLUMN_NAME
+		, T_DATA_TYPE      
+		, T_LENGTH1        
+		, T_LENGTH2        
+		, T_PK             
+		, A_SYSTEM_NAME    
+		, A_OWNER          
+		, A_ENG_TABLE_NAME 
+		, A_KOR_TABLE_NAME 
+		, A_ENG_COLUMN_NAME
+		, A_KOR_COLUMN_NAME
+		, A_DATA_TYPE      
+		, A_LENGTH1        
+		, A_LENGTH2        
+		, A_PK             
+		, MOVE_DEFAULT     
+		, MOVE_YN          
+		, MOVE_RULE        
+		, MOVE_SQL         
+		, ALT_EMP_NO       
+		, PREE_CDTN        
+		, ALT_DT           
+		, JOB_OWNER        
+		, CLIENT_OWNER     
+		, MOVE_OWNER 
+		, MAP_STAT
+		, MAP_IUD_FLGCD
+      FROM  META_TABLE_MAP
+      WHERE ID = ${ID}
+         
+]]>
+	</select>
+	
+  <insert id="I001" parameterType="map" ><![CDATA[
+INSERT /*mm.repository.mapper.UpDefMapper.I001*/
+  INTO META_TABLE_MAP
+( MAP_SORT  
+, MAP_ID           
+, T_SYSTEM_NAME    
+, T_OWNER          
+, T_ENG_TABLE_NAME 
+, T_KOR_TABLE_NAME 
+, T_ENG_COLUMN_NAME
+, T_KOR_COLUMN_NAME
+, T_DATA_TYPE      
+, T_LENGTH1        
+, T_LENGTH2        
+, T_PK             
+, A_SYSTEM_NAME    
+, A_OWNER          
+, A_ENG_TABLE_NAME 
+, A_KOR_TABLE_NAME 
+, A_ENG_COLUMN_NAME
+, A_KOR_COLUMN_NAME
+, A_DATA_TYPE      
+, A_LENGTH1        
+, A_LENGTH2        
+, A_PK             
+, MOVE_DEFAULT     
+, MOVE_YN          
+, MOVE_RULE        
+, MOVE_SQL         
+, ALT_EMP_NO       
+, PREE_CDTN        
+, ALT_DT           
+, JOB_OWNER        
+, CLIENT_OWNER     
+, MOVE_OWNER  
+, MAP_STAT
+, MAP_IUD_FLGCD )
+VALUES
+(${MAP_SORT}
+,'${MAP_ID}'
+,'${T_SYSTEM_NAME}'
+,'${T_OWNER}'
+,'${T_ENG_TABLE_NAME}'
+,'${T_KOR_TABLE_NAME}'
+,'${T_ENG_COLUMN_NAME}'
+,'${T_KOR_COLUMN_NAME}'
+,'${T_DATA_TYPE}'
+,'${T_LENGTH1}'
+,'${T_LENGTH2}'
+,'${T_PK}'
+,'${A_SYSTEM_NAME}'
+,'${A_OWNER}'
+,'${A_ENG_TABLE_NAME}'
+,'${A_KOR_TABLE_NAME}'
+,'${A_ENG_COLUMN_NAME}'
+,'${A_KOR_COLUMN_NAME}'
+,'${A_DATA_TYPE}'
+,'${A_LENGTH1}'
+,'${A_LENGTH2}'
+,'${A_PK}'
+,'${MOVE_DEFAULT}'
+,'${MOVE_YN}'
+,'${MOVE_RULE}'
+,'${MOVE_SQL}'
+,'${ALT_EMP_NO}'
+,'${PREE_CDTN}'
+,'${ALT_DT}'
+,'${JOB_OWNER}'
+,'${CLIENT_OWNER}'
+,'${MOVE_OWNER}'
+,'${MAP_STAT}'
+,'${MAP_IUD_FLGCD}')
+
+]]>
+	</insert>
+	
+	
+	
+<!--  <insert id="I002" parameterType="map" ><![CDATA[
+INSERT /*mm.repository.mapper.UpDefMapper.I002*/
+  INTO META_TABLE_MAP_CRR
+( CHNG_DT
+, CHNG_SEQ
+, ID
+, MAP_SORT  
+, MAP_ID           
+, T_SYSTEM_NAME    
+, T_OWNER          
+, T_ENG_TABLE_NAME 
+, T_KOR_TABLE_NAME 
+, T_ENG_COLUMN_NAME
+, T_KOR_COLUMN_NAME
+, T_DATA_TYPE      
+, T_LENGTH1        
+, T_LENGTH2        
+, T_PK             
+, A_SYSTEM_NAME    
+, A_OWNER          
+, A_ENG_TABLE_NAME 
+, A_KOR_TABLE_NAME 
+, A_ENG_COLUMN_NAME
+, A_KOR_COLUMN_NAME
+, A_DATA_TYPE      
+, A_LENGTH1        
+, A_LENGTH2        
+, A_PK             
+, MOVE_DEFAULT     
+, MOVE_YN          
+, MOVE_RULE        
+, MOVE_SQL         
+, ALT_EMP_NO       
+, PREE_CDTN        
+, ALT_DT           
+, JOB_OWNER        
+, CLIENT_OWNER     
+, MOVE_OWNER  
+, MAP_STAT
+, MAP_IUD_FLGCD )
+VALUES
+(
+  NOW()
+, (SELECT IFNULL(MAX(CHNG_SEQ),0) + 1 FROM META_TABLE_MAP_CRR AS X WHERE DATE_FORMAT(CHNG_DT,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d'))
+,${ID}
+,${MAP_SORT}
+,'${MAP_ID}'
+,'${T_SYSTEM_NAME}'
+,'${T_OWNER}'
+,'${T_ENG_TABLE_NAME}'
+,'${T_KOR_TABLE_NAME}'
+,'${T_ENG_COLUMN_NAME}'
+,'${T_KOR_COLUMN_NAME}'
+,'${T_DATA_TYPE}'
+,'${T_LENGTH1}'
+,'${T_LENGTH2}'
+,'${T_PK}'
+,'${A_SYSTEM_NAME}'
+,'${A_OWNER}'
+,'${A_ENG_TABLE_NAME}'
+,'${A_KOR_TABLE_NAME}'
+,'${A_ENG_COLUMN_NAME}'
+,'${A_KOR_COLUMN_NAME}'
+,'${A_DATA_TYPE}'
+,'${A_LENGTH1}'
+,'${A_LENGTH2}'
+,'${A_PK}'
+,'${MOVE_DEFAULT}'
+,'${MOVE_YN}'
+,'${MOVE_RULE}'
+,'${MOVE_SQL}'
+,'${ALT_EMP_NO}'
+,'${PREE_CDTN}'
+,'${ALT_DT}'
+,'${JOB_OWNER}'
+,'${CLIENT_OWNER}'
+,'${MOVE_OWNER}'
+,'${MAP_STAT}'
+,'${MAP_IUD_FLGCD}')
+
+]]>
+</insert>	
+-->	
+<insert id="I002" parameterType="map" ><![CDATA[
+INSERT /*mm.repository.mapper.UpDefMapper.I002*/
+  INTO META_TABLE_MAP_HST
+( CHNG_DT
+, CHNG_SEQ
+, ID
+, BF_MAP_SORT              
+, AF_MAP_SORT              
+, BF_MAP_ID                
+, AF_MAP_ID                
+, BF_T_SYSTEM_NAME         
+, AF_T_SYSTEM_NAME         
+, BF_T_OWNER               
+, AF_T_OWNER               
+, BF_T_ENG_TABLE_NAME      
+, AF_T_ENG_TABLE_NAME      
+, BF_T_KOR_TABLE_NAME      
+, AF_T_KOR_TABLE_NAME      
+, BF_T_ENG_COLUMN_NAME     
+, AF_T_ENG_COLUMN_NAME     
+, BF_T_KOR_COLUMN_NAME     
+, AF_T_KOR_COLUMN_NAME     
+, BF_T_DATA_TYPE           
+, AF_T_DATA_TYPE           
+, BF_T_LENGTH1             
+, AF_T_LENGTH1             
+, BF_T_LENGTH2             
+, AF_T_LENGTH2             
+, BF_T_PK                  
+, AF_T_PK                  
+, BF_A_SYSTEM_NAME         
+, AF_A_SYSTEM_NAME         
+, BF_A_OWNER               
+, AF_A_OWNER               
+, BF_A_ENG_TABLE_NAME      
+, AF_A_ENG_TABLE_NAME      
+, BF_A_KOR_TABLE_NAME      
+, AF_A_KOR_TABLE_NAME      
+, BF_A_ENG_COLUMN_NAME     
+, AF_A_ENG_COLUMN_NAME      
+, BF_A_KOR_COLUMN_NAME     
+, AF_A_KOR_COLUMN_NAME     
+, BF_A_DATA_TYPE           
+, AF_A_DATA_TYPE           
+, BF_A_LENGTH1             
+, AF_A_LENGTH1             
+, BF_A_LENGTH2             
+, AF_A_LENGTH2             
+, BF_A_PK                  
+, AF_A_PK                  
+, BF_MOVE_DEFAULT          
+, AF_MOVE_DEFAULT          
+, BF_MOVE_YN               
+, AF_MOVE_YN               
+, BF_MOVE_RULE             
+, AF_MOVE_RULE             
+, BF_MOVE_SQL              
+, AF_MOVE_SQL              
+, BF_ALT_EMP_NO            
+, AF_ALT_EMP_NO            
+, BF_PREE_CDTN             
+, AF_PREE_CDTN             
+, BF_ALT_DT                
+, AF_ALT_DT                
+, BF_JOB_OWNER             
+, AF_JOB_OWNER             
+, BF_CLIENT_OWNER          
+, AF_CLIENT_OWNER          
+, BF_MOVE_OWNER            
+, AF_MOVE_OWNER            
+, MAP_STAT
+, MAP_IUD_FLGCD )
+VALUES
+(
+  NOW()
+, (SELECT IFNULL(MAX(CHNG_SEQ),0) + 1 FROM META_TABLE_MAP_HST AS X WHERE DATE_FORMAT(CHNG_DT,'%Y%m%d') = DATE_FORMAT(NOW(),'%Y%m%d'))
+, #{ID}
+, #{BF_MAP_SORT}
+, #{AF_MAP_SORT}
+, #{BF_MAP_ID}
+, #{AF_MAP_ID}
+, #{BF_T_SYSTEM_NAME}
+, #{AF_T_SYSTEM_NAME}
+, #{BF_T_OWNER}
+, #{AF_T_OWNER}
+, #{BF_T_ENG_TABLE_NAME}
+, #{AF_T_ENG_TABLE_NAME}
+, #{BF_T_KOR_TABLE_NAME}
+, #{AF_T_KOR_TABLE_NAME}
+, #{BF_T_ENG_COLUMN_NAME}
+, #{AF_T_ENG_COLUMN_NAME}
+, #{BF_T_KOR_COLUMN_NAME}
+, #{AF_T_KOR_COLUMN_NAME}
+, #{BF_T_DATA_TYPE}
+, #{AF_T_DATA_TYPE}
+, #{BF_T_LENGTH1}
+, #{AF_T_LENGTH1}
+, #{BF_T_LENGTH2}
+, #{AF_T_LENGTH2}
+, #{BF_T_PK}
+, #{AF_T_PK}
+, #{BF_A_SYSTEM_NAME}
+, #{AF_A_SYSTEM_NAME}
+, #{BF_A_OWNER}
+, #{AF_A_OWNER}
+, #{BF_A_ENG_TABLE_NAME}
+, #{AF_A_ENG_TABLE_NAME}
+, #{BF_A_KOR_TABLE_NAME}
+, #{AF_A_KOR_TABLE_NAME}
+, #{BF_A_ENG_COLUMN_NAME}
+, #{AF_A_ENG_COLUMN_NAME}
+, #{BF_A_KOR_COLUMN_NAME}
+, #{AF_A_KOR_COLUMN_NAME}
+, #{BF_A_DATA_TYPE}
+, #{AF_A_DATA_TYPE}
+, #{BF_A_LENGTH1}
+, #{AF_A_LENGTH1}
+, #{BF_A_LENGTH2}
+, #{AF_A_LENGTH2}
+, #{BF_A_PK}
+, #{AF_A_PK}
+, #{BF_MOVE_DEFAULT}
+, #{AF_MOVE_DEFAULT}
+, #{BF_MOVE_YN}
+, #{AF_MOVE_YN}
+, #{BF_MOVE_RULE}
+, #{AF_MOVE_RULE}
+, #{BF_MOVE_SQL}
+, #{AF_MOVE_SQL}
+, #{BF_ALT_EMP_NO}
+, #{AF_ALT_EMP_NO}
+, #{BF_PREE_CDTN}
+, #{AF_PREE_CDTN}
+, #{BF_ALT_DT}
+, #{AF_ALT_DT}
+, #{BF_JOB_OWNER}
+, #{AF_JOB_OWNER}
+, #{BF_CLIENT_OWNER}
+, #{AF_CLIENT_OWNER}
+, #{BF_MOVE_OWNER}
+, #{AF_MOVE_OWNER}
+, #{MAP_STAT}
+, #{MAP_IUD_FLGCD})
+
+]]>
+</insert>		
+	
+	
+	
+<update id="U001" parameterType="map" ><![CDATA[
+UPDATE /*mm.repository.mapper.UpDefMapper.U001*/
+       META_TABLE_MAP
+SET    MAP_SORT          = IFNULL(#{MAP_SORT}          ,MAP_SORT         ) 
+     , MAP_ID            = IFNULL(#{MAP_ID}            ,MAP_ID           ) 
+     , T_SYSTEM_NAME     = IFNULL(#{T_SYSTEM_NAME}     ,T_SYSTEM_NAME    ) 
+     , T_OWNER           = IFNULL(#{T_OWNER}           ,T_OWNER          ) 
+     , T_ENG_TABLE_NAME  = IFNULL(#{T_ENG_TABLE_NAME}  ,T_ENG_TABLE_NAME ) 
+     , T_KOR_TABLE_NAME  = IFNULL(#{T_KOR_TABLE_NAME}  ,T_KOR_TABLE_NAME ) 
+     , T_ENG_COLUMN_NAME = IFNULL(#{T_ENG_COLUMN_NAME} ,T_ENG_COLUMN_NAME) 
+     , T_KOR_COLUMN_NAME = IFNULL(#{T_KOR_COLUMN_NAME} ,T_KOR_COLUMN_NAME) 
+     , T_DATA_TYPE       = IFNULL(#{T_DATA_TYPE}       ,T_DATA_TYPE      ) 
+     , T_LENGTH1         = IFNULL(#{T_LENGTH1}         ,T_LENGTH1        ) 
+     , T_LENGTH2         = IFNULL(#{T_LENGTH2}         ,T_LENGTH2        ) 
+     , T_PK              = IFNULL(#{T_PK}              ,T_PK             ) 
+     , A_SYSTEM_NAME     = IFNULL(#{A_SYSTEM_NAME}     ,A_SYSTEM_NAME    ) 
+     , A_OWNER           = IFNULL(#{A_OWNER}           ,A_OWNER          ) 
+     , A_ENG_TABLE_NAME  = IFNULL(#{A_ENG_TABLE_NAME}  ,A_ENG_TABLE_NAME ) 
+     , A_KOR_TABLE_NAME  = IFNULL(#{A_KOR_TABLE_NAME}  ,A_KOR_TABLE_NAME ) 
+     , A_ENG_COLUMN_NAME = IFNULL(#{A_ENG_COLUMN_NAME} ,A_ENG_COLUMN_NAME) 
+     , A_KOR_COLUMN_NAME = IFNULL(#{A_KOR_COLUMN_NAME} ,A_KOR_COLUMN_NAME) 
+     , A_DATA_TYPE       = IFNULL(#{A_DATA_TYPE}       ,A_DATA_TYPE      ) 
+     , A_LENGTH1         = IFNULL(#{A_LENGTH1}         ,A_LENGTH1        ) 
+     , A_LENGTH2         = IFNULL(#{A_LENGTH2}         ,A_LENGTH2        ) 
+     , A_PK              = IFNULL(#{A_PK}              ,A_PK             ) 
+     , MOVE_DEFAULT      = IFNULL(#{MOVE_DEFAULT}      ,MOVE_DEFAULT     ) 
+     , MOVE_YN           = IFNULL(#{MOVE_YN}           ,MOVE_YN          ) 
+     , MOVE_RULE         = IFNULL(#{MOVE_RULE}         ,MOVE_RULE        ) 
+     , MOVE_SQL          = IFNULL(#{MOVE_SQL}          ,MOVE_SQL         ) 
+     , ALT_EMP_NO        = IFNULL(#{ALT_EMP_NO}        ,ALT_EMP_NO       ) 
+     , PREE_CDTN         = IFNULL(#{PREE_CDTN}         ,PREE_CDTN        ) 
+     , ALT_DT            = IFNULL(#{ALT_DT}            ,ALT_DT           ) 
+     , JOB_OWNER         = IFNULL(#{JOB_OWNER}         ,JOB_OWNER        ) 
+     , CLIENT_OWNER      = IFNULL(#{CLIENT_OWNER}      ,CLIENT_OWNER     ) 
+     , MOVE_OWNER        = IFNULL(#{MOVE_OWNER}        ,MOVE_OWNER       ) 
+     , MAP_STAT          = IFNULL(#{MAP_STAT}          ,MAP_STAT         ) 
+     , MAP_IUD_FLGCD     = IFNULL(#{MAP_IUD_FLGCD}     ,MAP_IUD_FLGCD    )
+WHERE ID   = ${ID}
+
+]]>
+</update>
+<update id="U002" parameterType="map" ><![CDATA[
+UPDATE /*mm.repository.mapper.UpDefMapper.U002*/
+       META_TABLE_MAP
+SET    MAP_STAT          = IFNULL(#{MAP_STAT}         ,MAP_STAT         ) 
+     , MAP_IUD_FLGCD     = IFNULL(#{MAP_IUD_FLGCD}    ,MAP_IUD_FLGCD    )
+WHERE ID   = #{ID}
+
+]]>
+</update>
+<delete id="D001" parameterType="map" ><![CDATA[
+DELETE /*mm.repository.mapper.UpDefMapper.D001*/
+  FROM  META_TABLE_MAP
+ WHERE  ID   = #{ID}  
+
+]]>
+	</delete>
+</mapper>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="utf-8">
+      <title>1. Basic</title>
+       <link rel="stylesheet" type="text/css" href="./css/tui-example-style.css" />
+       <link rel="stylesheet" type="text/css" href="./lib/tui-grid/dist/tui-grid.css" />   
+  </head>
+
+  <body>
+    <div class="description">
+    
+    
+    </div>
+    
+    <div class="code-html contents">
+   	   <div class="preset">
+             <button id="btn-load">SQL 포멧팅 변환</button>
+      </div>
+      <br></br>
+      <br />
+		<label for="asisSql"><strong >BEFORE SQL</strong></label>
+		<br />
+      <TEXTAREA id="asisSql" name="asisSql" rows="20" style="WIDTH: 100%"></textarea> 
+      <br >
+      <label for=tobeSql><strong >AFTER SQL</strong></label>
+      <TEXTAREA id="tobeSql" name="tobeSql" rows="20" style="WIDTH: 100%" ></textarea> 
+      <br />
+    </div>
+  </body>
+  
+  
+  <script type="text/javascript" src="./lib/jquery/dist/jquery.js"></script>
+   <script type="text/javascript" src="./lib/underscore/underscore.js"></script>
+  <script type="text/javascript" src="./lib/backbone/backbone.js"></script>
+  <script type="text/javascript" src="./lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+  <script type="text/javascript" src="./lib/tui-pagination/dist/tui-pagination.js"></script>
+ 
+  <script type="text/javascript" src="./lib/tui-grid/dist/tui-grid.js"></script>
+
+  <script type="text/javascript" class="code-js">
+  
+    
+    $('#btn-load').on('click', function() {
+    	var Prams = '';
+    	/*encodeURIComponent 는 ajax 특수문자 전송시 필요*/
+    	Prams +='&QUERY='+ encodeURIComponent($('#asisSql').val().replace(/\n/g," "));  /*개행문자 처리 필요*/
+    	
+    	
+    	$.ajax({
+            url:"./resources/restapi/preServ",
+            type:'POST',
+            headers: { 'trid': 'sqlFormatter' ,'fncd':'RA'},
+            
+            data: Prams,
+            success:function(data){
+            	$('#tobeSql').val(data.RESULT);
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+                self.close();
+            }
+        });  
+    	  
+    });
+    
+  </script>
+   
+
+</html>

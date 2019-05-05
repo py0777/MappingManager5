@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="utf-8">
+      <title>1. Basic</title>
+       <link rel="stylesheet" type="text/css" href="./css/tui-example-style.css" />
+       <link rel="stylesheet" type="text/css" href="./css/py0777.css" />
+       <link rel="stylesheet" type="text/css" href="./lib/tui-grid/dist/tui-grid.css" /> 
+       <style>
+       		input.uppercase{
+       		text-transform: uppercase;
+       		}
+       </style>
+  
+  </head>
+
+  <body>
+	  <div id="wrapper">
+	     <div id="header">
+	     		<br>
+	   	        <label ><strong>ASIS테이블명  : </strong></lable>	        
+				<input id ="IN_ATBL" name ="IN_ATBL" type ="text" class="uppercase" oninput="this.value=this.value.toUpperCase()" onkeypress="if( event.keyCode==13 ){$('.btn-search').click();}"/>
+				<label ><strong>ASIS컬럼명  : </strong></lable>
+				<input id ="IN_ACOL" name ="IN_ACOL" type ="text" class="uppercase" oninput="this.value=this.value.toUpperCase()" onkeypress="if( event.keyCode==13 ){$('.btn-search').click();}"/>
+				<br>
+				<label ><strong>TOBE테이블명  : </strong></lable>	        
+				<input id ="IN_TTBL" name ="IN_TTBL" type ="text" class="uppercase" oninput="this.value=this.value.toUpperCase()" onkeypress="if( event.keyCode==13 ){$('.btn-search').click();}"/>
+				<label ><strong>TOBE컬럼명  : </strong></lable>
+				<input id ="IN_TCOL" name ="IN_TCOL" type ="text" class="uppercase" oninput="this.value=this.value.toUpperCase()" onkeypress="if( event.keyCode==13 ){$('.btn-search').click();}"/>
+				<button class="btn-search" id="btn-search">조회</button>
+				<button class="btn-init" id="btn-init">초기화</button>
+				<br />
+	      </div>
+	      <div class="container" >
+		      <div id="grid1"></div>
+		      <div id="grid"></div>
+		      
+	      </div>
+	      <div id="footer">footer</div>
+	      <div id="rtnMsg"><label id =rtnMsg></label> </lable></div>
+      </div>
+  </body>
+  
+  
+  <script type="text/javascript" src="./lib/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="./lib/underscore/underscore.js"></script>
+  <script type="text/javascript" src="./lib/backbone/backbone.js"></script>
+  <script type="text/javascript" src="./lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+  <script type="text/javascript" src="./lib/tui-pagination/dist/tui-pagination.js"></script>
+ 
+  <script type="text/javascript" src="./lib/tui-grid/dist/tui-grid.js"></script>
+
+  <script type="text/javascript" class="code-js">
+  var grid1 = new tui.Grid({
+      el: $('#grid1'),
+      scrollX: false,
+      scrollY: false,
+      header: {
+          height: 60,
+          complexColumns: [
+              {
+                  title: '테이블맵핑',
+                  name: 'mergeColumn1',
+                  childNames: ['T_ENG_TABLE_NAME', 'T_KOR_TABLE_NAME', 'A_ENG_TABLE_NAME', 'A_KOR_TABLE_NAME', '업무담당자']
+              }
+          ]
+      },
+      columns: [         
+          {
+              title: 'TOBE 테이블',
+              name: 'T_ENG_TABLE_NAME'
+          },
+
+          {
+              title: 'TOBE 테이블한글',
+              name: 'T_KOR_TABLE_NAME'
+          },
+          {
+              title: 'ASIS 테이블',
+              name: 'A_ENG_TABLE_NAME'
+          },
+          {
+              title: 'ASIS 테이블한글',
+              name: 'A_KOR_TABLE_NAME'
+          },
+          {
+              title: '업무담당자',
+              name: '업무담당자'
+          }
+      ]
+  });
+  var grid = new tui.Grid({
+      el: $('#grid'),
+      scrollX: false,
+      scrollY: true,
+      //bodyHeight : 500,
+      header: {
+          height: 60,
+          complexColumns: [
+              {
+                  title: '컬럼맵핑정의서',
+                  name: 'mergeColumn1',
+                  childNames: ['MAP_ID'
+                               , 'T_ENG_TABLE_NAME'
+                               , 'T_KOR_TABLE_NAME'
+                               , 'T_ENG_COLUMN_NAME'
+                               , 'T_KOR_COLUMN_NAME'
+                               , 'T_DATA_TYPE'
+                               , 'T_LENGTH1'
+                               , 'T_LENGTH2'
+                               , 'T_PK'
+                               , 'A_ENG_TABLE_NAME'
+                               , 'A_KOR_TABLE_NAME'
+                               , 'A_ENG_COLUMN_NAME'
+                               , 'A_KOR_COLUMN_NAME'
+                               , 'A_DATA_TYPE'
+                               , 'A_LENGTH1'
+                               , 'A_PK'
+                               , 'MOVE_RULE'
+                               , 'MOVE_SQL'
+                               , '업무담당자']
+              }
+          ]
+      },
+      
+      columns: [ 
+		  {
+		    title: 'MAP_ID',
+		    whiteSpace: 'normal',
+		    name: 'MAP_ID'
+		  },		
+		  {
+		    title: 'TOBE테이블명',
+		    whiteSpace: 'normal',
+		    name: 'T_ENG_TABLE_NAME'
+		  },
+          {
+              title: 'TOBE한글테이블명',
+              whiteSpace: 'normal',
+              name: 'T_KOR_TABLE_NAME'
+          },
+          {
+              title: 'TOBE컬럼명',
+              whiteSpace: 'normal',
+              name: 'T_ENG_COLUMN_NAME'
+          },
+          {
+              title: 'TOBE영문컬럼명',
+              whiteSpace: 'normal',
+              name: 'T_KOR_COLUMN_NAME'
+          },
+          {
+              title: 'TOBE TYPE',
+              whiteSpace: 'normal',
+              name: 'T_DATA_TYPE'
+          },
+          {
+              title: 'TOBE길이1',
+              whiteSpace: 'normal',
+              name: 'T_LENGTH1'
+          },
+          {
+              title: 'TOBE길이2',
+              whiteSpace: 'normal',
+              name: 'T_LENGTH2'
+          },
+          {
+  		      title: 'TOBE_PK',
+  		  	  whiteSpace: 'normal',
+  		      name: 'T_PK'
+  		  },		
+  		  {
+  		      title: 'ASIS테이블명',
+  		  	  whiteSpace: 'normal',
+  		      name: 'A_ENG_TABLE_NAME'
+  		  },
+          {
+              title: 'ASIS한글테이블명',
+              whiteSpace: 'normal',
+              name: 'A_KOR_TABLE_NAME'
+          },
+          {
+              title: 'ASIS컬럼명',
+              whiteSpace: 'normal',
+              name: 'A_ENG_COLUMN_NAME'
+          },
+          {
+              title: 'ASIS영문컬럼명',
+              whiteSpace: 'normal',
+              name: 'A_KOR_COLUMN_NAME'
+          },
+          {
+              title: 'ASIS TYPE',
+              whiteSpace: 'normal',
+              name: 'A_DATA_TYPE'
+          },
+          {
+              title: 'ASIS길이1',
+              whiteSpace: 'normal',
+              name: 'A_LENGTH1'
+          },
+          {
+              title: 'ASIS_PK',
+              whiteSpace: 'normal',
+              name: 'A_PK'
+          },
+          {
+              title: 'MOVE_RULE',
+              whiteSpace: 'normal',
+              name: 'MOVE_RULE'
+          },
+          {
+              title: 'MOVE_SQL',
+              whiteSpace: 'normal',
+              name: 'MOVE_SQL'
+          },
+          {
+              title: '업무담당자',
+              whiteSpace: 'normal',
+              name: '업무담당자'
+          }
+      ]
+  }); 
+  
+  tui.Grid.applyTheme('default', {
+	    grid: { border: '#000000', background: '#FFFFFF', text: '#444' },
+	    selection: { background: '#008080', border: '10px' },
+	   
+	    cell: { 
+	    	head: { background: 'yellow' , border: '#000000'},
+	    	normal:{background: '#FFFFFF'},
+	        disabled: { text: '#008080' }
+	    }
+	});
+  
+  grid.on('click', function() {
+	    console.log('clicked!!');
+	}).on('dblclick', function() {
+	    console.log('double clicked!!');
+	});
+
+	
+	/*조회 버튼 */
+    $('#btn-search').on('click', function() {
+    	var Prams ='';
+   		
+	   	Prams +='&IN_ATBL='+$('#IN_ATBL').val().replace(/\n/g," ");
+	   	Prams +='&IN_ACOL='+$('#IN_ACOL').val().replace(/\n/g," ");
+	   	Prams +='&IN_TTBL='+$('#IN_TTBL').val().replace(/\n/g," ");
+	   	Prams +='&IN_TCOL='+$('#IN_TCOL').val().replace(/\n/g," ");
+	   	if(    $('#IN_ATBL').val().trim()=='' 
+	   		&& $('#IN_ACOL').val().trim()=='' 
+	   		&& $('#IN_TTBL').val().trim()==''
+	   		&& $('#IN_TCOL').val().trim()=='' ){
+	   		alert('테이블 또는 컬럼 중 한개 이상 입력하셔야 합니다');
+	   		$('#IN_ATBL').focus();
+	   		return;
+	   	} 
+	   	/*그리드 초기화*/
+	   	grid.refreshLayout(); 
+	   	grid1.refreshLayout();
+	   	$.ajax({
+	   		url:"./resources/restapi/preServ",
+        	type:'POST',
+        	headers: { 'trid': 'colinq' ,'fncd':'RA'},
+        	data: Prams,
+            success:function(data){
+            	
+         		grid1.setData(data.rsTbl);
+        		grid.setData(data.rsCol);
+        		//grid.setFrozenColumnCount(3)
+        		$('#rtnMsg').text(data.rtnMsg);
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+                self.close();
+            }
+       	});
+    });
+    /*초기화 버튼 클릭*/
+    $('#btn-init').on('click', function() {
+    	location.reload();
+    	$('#IN_ATBL').focus();
+    });
+  </script>
+   
+
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="utf-8">
+      <title>1. Basic</title>
+       <link rel="stylesheet" type="text/css" href="./css/tui-example-style.css" />
+       <link rel="stylesheet" type="text/css" href="./lib/tui-grid/dist/tui-grid.css" /> 
+       
+  
+  </head>
+
+  <body>
+    <div class="description">
+    "gg"
+    
+    </div>
+    
+    <div class="code-html contents">
+   	   <div class="preset">
+			 <input  type="text" name ="name"/>
+             <button class="btn-theme" data-preset="default">default</button>
+             <button class="btn-theme" data-preset="striped">striped</button>
+             <button class="btn-theme" data-preset="clean">clean</button>
+             <button id="btn-load">변환</button>
+      </div>
+      <br></br>
+       <div class="custom">
+            <TEXTAREA id="asisSql" name="asisSql" rows="20" style="WIDTH: 46%"></textarea> 
+	        <TEXTAREA id="tobeSql" name="tobeSql" rows="20" style="WIDTH: 46%"></textarea>
+            
+        </div>
+      <div id="grid"></div>
+    </div>
+  </body>
+  
+  
+  <script type="text/javascript" src="./lib/jquery/dist/jquery.js"></script>
+   <script type="text/javascript" src="./lib/underscore/underscore.js"></script>
+  <script type="text/javascript" src="./lib/backbone/backbone.js"></script>
+  <script type="text/javascript" src="./lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+  <script type="text/javascript" src="./lib/tui-pagination/dist/tui-pagination.js"></script>
+ 
+  <script type="text/javascript" src="./lib/tui-grid/dist/tui-grid.js"></script>
+
+  <script type="text/javascript" class="code-js">
+  var grid1 = new tui.Grid({
+      el: $('#grid'),
+      scrollX: false,
+      scrollY: false,
+      rowHeaders:['checkbox'],
+      header: {
+          height: 80,
+          complexColumns: [
+              {
+                  title: '대상테이블',
+                  name: 'mergeColumn1',
+                  childNames: ['ATBL', 'ATBLNM', 'TBL', 'TBLNM']
+              }
+          ]
+      },
+      columns: [         
+          {
+              title: 'TOBE테이블',
+              name: 'ATBL'
+          },
+
+          {
+              title: 'TOBE테이블한글',
+              name: 'ATBLNM'
+          },
+          {
+              title: 'ASIS테이블',
+              name: 'TBL'
+          },
+          {
+              title: 'ASIS테이블한글',
+              name: 'TBLNM'
+          }
+      ]
+  });
+  var grid = new tui.Grid({
+      el: $('#grid'),
+      scrollX: true,
+      scrollY: true,
+      header: {
+          height: 80,
+          complexColumns: [
+              {
+                  title: '대상컬럼',
+                  name: 'mergeColumn1',
+                  childNames: ['ATBL', 'ATBLNM', 'ACOL', 'ACOLNM', 'TBL', 'TBLNM', 'COL', 'COLNM']
+              }
+          ]
+      },
+      columns: [ 
+		  {
+		    title: 'TOBE테이블',
+		    name: 'ATBL'
+		  },		
+		  {
+		    title: 'TOBE테이블한글',
+		    name: 'ATBLNM'
+		  },
+          {
+              title: 'TOBE컬럼',
+              name: 'ACOL'
+          },
+          {
+              title: 'TOBE컬럼명',
+              name: 'ACOLNM'
+          },
+          {
+              title: 'ASIS테이블',
+              name: 'TBL'
+          },
+          {
+              title: 'ASIS테이블한글',
+              name: 'TBLNM'
+          },
+          {
+              title: 'ASIS컬럼',
+              name: 'COL'
+          },
+          {
+              title: 'ASIS컬럼명',
+              name: 'COLNM'
+          }
+      ]
+  }); 
+  
+ 
+  
+  grid.on('click', function() {
+	    console.log('clicked!!');
+	}).on('dblclick', function() {
+	    console.log('double clicked!!');
+	});
+
+	// Bind event handlers
+	grid.on('beforeRequest', function(data) {
+	    // For all requests
+		console.log("dddddd");
+	    
+	    
+	}).on('response', ev => {
+		  const {
+			    responseData,
+			    requestType
+			  } = ev;
+	    console.log('result : ', responseData.rsRtn);
+ 		console.log('requestType : ', requestType);
+ 		 
+ 		$('#tobeSql').val(responseData.RESULT);
+ 		grid1.setData(responseData.rsTblRtn);
+		grid.setData(responseData.rsRtn);
+		_extraData: { rowState: 'CHECKED'  };
+
+	}).on('successResponse', function(data) {
+	    // Only if response.result is true
+		console.log(data);
+	}).on('failResponse', function(data) {
+	    // Only if response.result is false
+	    console.log(data);
+		//console.log('failResponse');
+	}).on('errorResponse', function(data) {
+	    // For error response
+		console.log('errorResponse');
+	});
+	
+	  var currentPresetName = 'default';
+
+	  $('.btn-theme').click(function() {
+	      var preset = $(this).data('preset');
+	      currentPresetName = preset;
+	  	tui.Grid.applyTheme(preset);
+	  });
+
+	
+
+      $('#btn-load').on('click', function() {
+		
+    	var Prams ='';
+    	  Prams +='&QUERY='+$('#asisSql').val().replace(/\n/g," ");  /*개행문자 처리 필요*/
+    	  Prams +='&COMMENT_YN=Y';
+    	  Prams +='&SQLFORMAT_YN=Y';
+        grid.use('Net', {
+            page:1,
+            readDataMethod: 'GET',
+            dataType: "text",
+            api: {
+                readData: './resources/restapi?SERVICE_NAME=SqlTran'+Prams
+                
+            }
+        });
+    });
+  </script>
+   
+
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+      <meta charset="utf-8">
+      <title>1. Basic</title>
+       <link rel="stylesheet" type="text/css" href="./css/tui-example-style.css" />
+       <link rel="stylesheet" type="text/css" href="./lib/tui-grid/dist/tui-grid.css" /> 
+       <link rel="stylesheet" type="text/css" href="./lib/tui-date-picker/dist/tui-date-picker.css" />
+       <style>
+       		input.uppercase{
+       		text-transform: uppercase;
+       		}
+       </style>
+         
+  </head>
+
+  <body>
+    <div class="description">
+    
+    
+    </div>
+    
+    <div class="code-html contents">
+   	  
+    <select id="MAP_STAT" name="MAP_STAT" style="height:2.2em;">
+	    <option value="0">전체</option>
+	    <option value="1">반영</option>
+	    <option value="2">신청</option>
+	    <option value="3">반려</option>
+	    <option value="4">취소</option>
+	</select>
+     <div class="tui-datepicker-input" style="z-index: 2">
+        <input id="strtDt" type="text" aria-label="Date">
+        <span class="tui-ico-date"></span>
+        <div id="startpicker-container" style="margin-left: -1px;"></div>
+    </div>
+    <span>to</span>
+    <div class="tui-datepicker-input tui-datetime-input tui-has-focus header"  style="z-index: 2">
+        <input id="endDt" type="text" aria-label="Date">
+         <span class="tui-ico-date"></span> 
+        <div id="endpicker-container" style="margin-left: -1px;"> 
+        </div>
+            
+    </div>
+   
+    <button class="button" id="btn-search">조회</button>
+    
+ 	<button class="button"  id="btn-reject"  style="float: right;" >반려</button>
+ 	<button class="button"  id="btn-approve" style="float: right;" >승인</button>
+    <button class="button"  id="btn-cancel"  style="float: right;">취소</button>
+    
+    <br></br>
+      
+      <div id="grid";  style="z-index: 1"></div>
+      <div id="gridDtl";  style="z-index: 1"></div>      
+    </div>
+  </body>
+  
+
+  <script type="text/javascript" src="./lib/jquery/dist/jquery.js"></script>
+   <script type="text/javascript" src="./lib/underscore/underscore.js"></script>
+  <script type="text/javascript" src="./lib/backbone/backbone.js"></script>
+  <script type="text/javascript" src="./lib/tui-code-snippet/dist/tui-code-snippet.js"></script>
+  <script type="text/javascript" src="./lib/tui-pagination/dist/tui-pagination.js"></script>
+ 
+  <script type="text/javascript" src="./lib/tui-grid/dist/tui-grid.js"></script>
+  <script type="text/javascript" src="./lib/tui-date-picker/dist/tui-date-picker.js"></script>
+  <script type="text/javascript" class="code-js">
+  var grid = new tui.Grid({
+      el: $('#grid'),
+     
+      scrollX: false,
+      scrollY: true,
+      heightResizable: true,
+      minBodyHeight: 300,
+      rowHeaders: ['radio','rowNum'],
+      columns: [  
+		  {  title: '변경일자', name: 'CHNG_DT'},
+		  {  title: '변경상태', name: 'MAP_IUD_FLGNM'},
+		  {  title: '처리상태', name: 'MAP_STAT_NM'},
+          {  title: '변경순번', name: 'CHNG_SEQ' },
+          {  title: 'MAP_ID',   name: 'MAP_ID'},
+          {  title: 'TOBE테이블',name: 'T_ENG_TABLE_NAME'},
+          {  title: 'TOBE테이블한글',name: 'T_KOR_TABLE_NAME'},
+          {  title: 'TOBE컬럼명',name: 'T_ENG_COLUMN_NAME'},
+          {  title: 'TOBE컬럼한글명',name: 'T_KOR_COLUMN_NAME'},
+          {  title: 'ASIS테이블',name: 'A_ENG_TABLE_NAME'},
+          {  title: 'ASIS테이블한글',name: 'A_KOR_TABLE_NAME'},
+          {  title: 'ASIS컬럼명',name: 'A_ENG_COLUMN_NAME'},
+          {  title: 'ASIS컬럼한글명',name: 'A_KOR_COLUMN_NAME'},
+      ]
+  });
+    
+  grid.on('click', function(ev) {
+	    console.log('clicked!!');
+	    console.log(grid.getValue(ev.rowKey,'CHNG_DT') );
+	    app(grid.getValue(ev.rowKey,'CHNG_DT'),grid.getValue(ev.rowKey,'CHNG_SEQ'));
+	    
+	}).on('dblclick', function(ev) {
+	    console.log('double clicked!!');
+	    
+	});
+
+	// Bind event handlers
+	grid.on('beforeRequest', function(data) {
+	    // For all requests
+	
+	}).on('response', ev => {
+		  const {
+			    responseData,
+			    requestType
+			  } = ev;
+		 		 
+		
+	}).on('successResponse', function(data) {
+	    // Only if response.result is true
+		console.log(data);
+	}).on('failResponse', function(data) {
+	    // Only if response.result is false
+	    console.log(data);
+		//console.log('failResponse');
+	}).on('errorResponse', function(data) {
+	    // For error response
+		console.log('errorResponse');
+	});
+    
+	
+	var gridDtl = new tui.Grid({
+	      el: $('#gridDtl'),
+	     
+	      scrollX: false,
+	      scrollY: true,
+	      heightResizable: true,
+	      minBodyHeight: 300,
+	      rowHeaders: ['rowNum'],
+	      columns: [  
+			  {  title: 'ID', name: 'ID'},
+			  {  title: '변경 전', name: 'BF_CHG'},
+			  {  title: '변경 후', name: 'AF_CHG'}
+	      ]
+	  });
+	
+	/*조회*/
+    $('#btn-search').on('click', function() {
+    	var Prams = '';
+    	
+    	grid.clear();
+    	gridDtl.clear();
+    	
+    	Prams +='&MAP_STAT='+ $('#MAP_STAT option:selected').val();
+    	Prams +='&STRT_DT='+ $('#strtDt').val().replace(/-/gi,"");
+    	Prams +='&END_DT='+ $('#endDt').val().replace(/-/gi,"");
+    	
+    	$.ajax({
+            url:"./resources/restapi/preServ",
+            type:'POST',
+            headers: { 'trid': 'colChg' ,'fncd':'RA'},
+            
+            data: Prams,
+            success:function(data){
+            	
+         		grid.setData(data.rsCol);
+        		
+        		if(data.RSCNT > 5){
+        			grid.setBodyHeight(200);
+        		}
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+                self.close();
+            }
+        });  
+    	  
+    });
+    
+    var today = new Date();
+    var picker = tui.DatePicker.createRangePicker({
+        startpicker: {
+            date: today,
+            input: '#strtDt',
+            container: '#startpicker-container'
+        },
+        endpicker: {
+            date: today,
+            input: '#endDt',
+            container: '#endpicker-container'
+        }
+        /* 날짜 범위 설정
+        selectableRanges: [
+            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+        ]
+        */
+    });
+    
+    /*그리드 더블클릭*/
+    var app = function(chgDt, chgSeq) {
+    	var Prams = '';
+    	
+    	gridDtl.refreshLayout();
+    	Prams +='&CHNG_DT='+ chgDt;
+    	Prams +='&CHNG_SEQ='+ chgSeq;
+    	
+    	$.ajax({
+            url:"./resources/restapi/preServ",
+            type:'POST',
+            headers: { 'trid': 'colChg' ,'fncd':'RB'},
+            
+            data: Prams,
+            success:function(data){
+            	
+            	gridDtl.setData(data.rsCol);
+        		
+        		if(data.RSCNT > 5){
+        			gridDtl.setBodyHeight(200);
+        		}
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+                self.close();
+            }
+        });  
+    	  
+    };
+    
+    /*승인*/
+    $('#btn-approve').on('click', function() {
+    	var Prams = '';
+    	alert(grid.getValue(grid.getCheckedRowKeys(),'CHNG_DT'));
+    	
+    	Prams +='&MAP_STAT='+ '1';
+    	Prams +='&CHNG_DT='+ grid.getValue(grid.getCheckedRowKeys(),'CHNG_DT');
+    	Prams +='&CHNG_SEQ='+ grid.getValue(grid.getCheckedRowKeys(),'CHNG_SEQ');
+    	
+    	$.ajax({
+            url:"./resources/restapi/preServ",
+            type:'POST',
+            headers: { 'trid': 'colChg' ,'fncd':'CA'},
+            
+            data: Prams,
+            success:function(data){
+            	
+         		grid.setData(data.rsCol);
+        		
+        		if(data.RSCNT > 5){
+        			grid.setBodyHeight(200);
+        		}
+            },
+            error:function(jqXHR, textStatus, errorThrown){
+                alert("에러 발생~~ \n" + textStatus + " : " + errorThrown);
+                self.close();
+            }
+        });  
+    	  
+    });
+  </script>
+
+</html>
