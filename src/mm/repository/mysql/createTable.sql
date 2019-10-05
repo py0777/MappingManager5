@@ -1,3 +1,8 @@
+/*db생성*/
+-- create database py0777
+/*사용자 생성*/
+-- CREATE USER py0777@localhost IDENTIFIED BY '1';
+-- grant all privileges on py0777.* to py0777;
 
  
 drop table META_TABLE_MAP;
@@ -67,7 +72,7 @@ create table META_CODE_MAP(
 );
 ALTER TABLE META_CODE_MAP ADD CONSTRAINT pk_META_CODE_MAP PRIMARY KEY (ID);
 
-GRANT SELECT, INSERT, UPDATE, DELETE ON META_CODE_MAP TO ys2613;
+GRANT SELECT, INSERT, UPDATE, DELETE ON META_CODE_MAP TO py0777;
 
 create table META_TABLE_MAP_CRR(
 CHNG_DT                    DATE not null 
