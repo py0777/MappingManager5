@@ -9,7 +9,7 @@
 	  
 	  <property name="jdbc.driver" value="com.mysql.jdbc.Driver" />
 	  <property name="jdbc.username" value="root"/>
-	  <property name="jdbc.password" value="1111"/>
+	  <property name="jdbc.password" value="1"/>
 	</properties>
 
 	<!-- 마이바티스의 작동 규칙정의 -->
