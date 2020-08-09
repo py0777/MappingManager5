@@ -298,7 +298,6 @@ SELECT A.ID
 		  AND  CHNG_DT = '${CHNG_DT}'
 		  AND  CHNG_SEQ = ${CHNG_SEQ}
 		  AND  (IFNULL(BF_PREE_CDTN,'') <> IFNULL(AF_PREE_CDTN,'') )
-		UNION ALL
 		
  ) A 
      ]]>
@@ -643,8 +642,8 @@ SELECT CHNG_DT
      , MAP_STAT
      , MAP_IUD_FLGCD
   FROM META_TABLE_MAP_HST
-  WHERE CHNG_DT ='${CHNG_DT}'
-  AND  CHNG_SEQ ='${CHNG_SEQ}'     		
+  WHERE (CHNG_DT,CHNG_SEQ) IN (${CHNG_DT_SEQ})
+  
       ]]>
 	</select>	
 <update id="U001" parameterType="map" ><![CDATA[
@@ -690,8 +689,7 @@ WHERE ID   = ${ID}
 UPDATE /*mm.repository.mapper.ColChgMapper.U002*/
        META_TABLE_MAP_HST
 SET    MAP_STAT          = IFNULL('${MAP_STAT}'         ,MAP_STAT         ) 
-  WHERE CHNG_DT ='${CHNG_DT}'
-  AND  CHNG_SEQ ='${CHNG_SEQ}'   
+  WHERE (CHNG_DT,CHNG_SEQ) IN (${CHNG_DT_SEQ}) 
 
 ]]>
 </update>  

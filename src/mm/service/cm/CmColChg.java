@@ -204,6 +204,38 @@ public class CmColChg {
 				return responseData;
 			}
 			
+			/*MAP_ID 값 설정*/
+			StringBuffer mapIdSB = new StringBuffer();
+			String[] inputChngDt;
+			String[] inputChngSeq;
+			inputChngDt = requestData.getField("CHNG_DT").split(",");
+			inputChngSeq = requestData.getField("CHNG_SEQ").split(",");
+			
+			if(StringUtils.isEmpty(inputChngDt[0]) || "null".equals(inputChngDt[0]) || "NULL".equals(inputChngDt[0])){
+				requestData.putField("CHNG_DT", "'%'");
+			}else{
+				for(int i = 0 ; i <inputChngDt.length; i++){
+					String tobeChngDt  = inputChngDt[i]; /*ASIS*/
+					String tobeChngSeq  = inputChngSeq[i]; /*ASIS*/
+					
+					mapIdSB.append("('");
+					mapIdSB.append(tobeChngDt);
+					mapIdSB.append("'");
+					mapIdSB.append(",");
+					mapIdSB.append("'");
+					mapIdSB.append(tobeChngSeq);
+					mapIdSB.append("'");
+					mapIdSB.append("),");
+				}
+				
+				if(mapIdSB.length() > 0){
+					requestData.putField("CHNG_DT_SEQ", mapIdSB.delete(mapIdSB.length() - 1,  mapIdSB.length()).toString());
+				}else{
+					requestData.putField("CHNG_DT_SEQ", "('%','%')");					
+				}
+			}
+			logger.debug(mapIdSB);
+			
 			dsCol = dh.selectSql(requestData, namespace+"."+"S003");
 			rsCol = dsCol.getRecordSet("ResultSet");
 			
@@ -218,89 +250,91 @@ public class CmColChg {
 				return responseData;
 			}
 			
-			
-			/********************************************************************
-			 *  자료 등록/수정/삭제처리
-			 ********************************************************************/
-			dsI000In.putField("ID"                , rsCol.get(0, "ID"               )); 
-			dsI000In.putField("MAP_SORT"          , rsCol.get(0, "MAP_SORT"         )); 
-			dsI000In.putField("MAP_ID"            , rsCol.get(0, "MAP_ID"           )); 
-			dsI000In.putField("T_SYSTEM_NAME"     , rsCol.get(0, "T_SYSTEM_NAME"    )); 
-			dsI000In.putField("T_OWNER"           , rsCol.get(0, "T_OWNER"          )); 
-			dsI000In.putField("T_ENG_TABLE_NAME"  , rsCol.get(0, "T_ENG_TABLE_NAME" )); 
-			dsI000In.putField("T_KOR_TABLE_NAME"  , rsCol.get(0, "T_KOR_TABLE_NAME" )); 
-			dsI000In.putField("T_ENG_COLUMN_NAME" , rsCol.get(0, "T_ENG_COLUMN_NAME")); 
-			dsI000In.putField("T_KOR_COLUMN_NAME" , rsCol.get(0, "T_KOR_COLUMN_NAME")); 
-			dsI000In.putField("T_DATA_TYPE"       , rsCol.get(0, "T_DATA_TYPE"      )); 
-			dsI000In.putField("T_LENGTH1"         , rsCol.get(0, "T_LENGTH1"        )); 
-			dsI000In.putField("T_LENGTH2"         , rsCol.get(0, "T_LENGTH2"        )); 
-			dsI000In.putField("T_PK"              , rsCol.get(0, "T_PK"             )); 
-			dsI000In.putField("A_SYSTEM_NAME"     , rsCol.get(0, "A_SYSTEM_NAME"    )); 
-			dsI000In.putField("A_OWNER"           , rsCol.get(0, "A_OWNER"          )); 
-			dsI000In.putField("A_ENG_TABLE_NAME"  , rsCol.get(0, "A_ENG_TABLE_NAME" )); 
-			dsI000In.putField("A_KOR_TABLE_NAME"  , rsCol.get(0, "A_KOR_TABLE_NAME" )); 
-			dsI000In.putField("A_ENG_COLUMN_NAME" , rsCol.get(0, "A_ENG_COLUMN_NAME")); 
-			dsI000In.putField("A_KOR_COLUMN_NAME" , rsCol.get(0, "A_KOR_COLUMN_NAME")); 
-			dsI000In.putField("A_DATA_TYPE"       , rsCol.get(0, "A_DATA_TYPE"      )); 
-			dsI000In.putField("A_LENGTH1"         , rsCol.get(0, "A_LENGTH1"        )); 
-			dsI000In.putField("A_LENGTH2"         , rsCol.get(0, "A_LENGTH2"        )); 
-			dsI000In.putField("A_PK"              , rsCol.get(0, "A_PK"             )); 
-			dsI000In.putField("MOVE_DEFAULT"      , rsCol.get(0, "MOVE_DEFAULT"     )); 
-			dsI000In.putField("MOVE_YN"           , rsCol.get(0, "MOVE_YN"          )); 
-			dsI000In.putField("MOVE_RULE"         , rsCol.get(0, "MOVE_RULE"        )); 
-			dsI000In.putField("MOVE_SQL"          , rsCol.get(0, "MOVE_SQL"         )); 
-			dsI000In.putField("ALT_EMP_NO"        , rsCol.get(0, "ALT_EMP_NO"       )); 
-			dsI000In.putField("PREE_CDTN"         , rsCol.get(0, "PREE_CDTN"        )); 
-			dsI000In.putField("ALT_DT"            , rsCol.get(0, "ALT_DT"           )); 
-			dsI000In.putField("JOB_OWNER"         , rsCol.get(0, "JOB_OWNER"        )); 
-			dsI000In.putField("CLIENT_OWNER"      , rsCol.get(0, "CLIENT_OWNER"     )); 
-			dsI000In.putField("MOVE_OWNER"        , rsCol.get(0, "MOVE_OWNER"       )); 
-						
-			/*************************************************************
-			 * 처리상태
-			 *************************************************************/
-			if(  "1".equals(requestData.getField("MAP_STAT"))
-			   ||"3".equals(requestData.getField("MAP_STAT")) /*반려*/
-			   ||"4".equals(requestData.getField("MAP_STAT")))/*취소는 원복*/
-			{
-				/*승인*/
-				dsI000In.putField("MAP_STAT"          , "1"); /*반영완료*/
-			}
-			
-			/*************************************************************
-			 * 변경상태
-			 *************************************************************/
-			if("I".equals(rsCol.get(0, "MAP_IUD_FLGCD"))){
-				rsCnt =  dh.updateSql(dsI000In, namespace+"."+"U001");
+			for(int i = 0; i <  rsCol.getRecordCount() ; i++){
+				/********************************************************************
+				 *  자료 등록/수정/삭제처리
+				 ********************************************************************/
+				dsI000In.putField("ID"                , rsCol.get(i, "ID"               )); 
+				dsI000In.putField("MAP_SORT"          , rsCol.get(i, "MAP_SORT"         )); 
+				dsI000In.putField("MAP_ID"            , rsCol.get(i, "MAP_ID"           )); 
+				dsI000In.putField("T_SYSTEM_NAME"     , rsCol.get(i, "T_SYSTEM_NAME"    )); 
+				dsI000In.putField("T_OWNER"           , rsCol.get(i, "T_OWNER"          )); 
+				dsI000In.putField("T_ENG_TABLE_NAME"  , rsCol.get(i, "T_ENG_TABLE_NAME" )); 
+				dsI000In.putField("T_KOR_TABLE_NAME"  , rsCol.get(i, "T_KOR_TABLE_NAME" )); 
+				dsI000In.putField("T_ENG_COLUMN_NAME" , rsCol.get(i, "T_ENG_COLUMN_NAME")); 
+				dsI000In.putField("T_KOR_COLUMN_NAME" , rsCol.get(i, "T_KOR_COLUMN_NAME")); 
+				dsI000In.putField("T_DATA_TYPE"       , rsCol.get(i, "T_DATA_TYPE"      )); 
+				dsI000In.putField("T_LENGTH1"         , rsCol.get(i, "T_LENGTH1"        )); 
+				dsI000In.putField("T_LENGTH2"         , rsCol.get(i, "T_LENGTH2"        )); 
+				dsI000In.putField("T_PK"              , rsCol.get(i, "T_PK"             )); 
+				dsI000In.putField("A_SYSTEM_NAME"     , rsCol.get(i, "A_SYSTEM_NAME"    )); 
+				dsI000In.putField("A_OWNER"           , rsCol.get(i, "A_OWNER"          )); 
+				dsI000In.putField("A_ENG_TABLE_NAME"  , rsCol.get(i, "A_ENG_TABLE_NAME" )); 
+				dsI000In.putField("A_KOR_TABLE_NAME"  , rsCol.get(i, "A_KOR_TABLE_NAME" )); 
+				dsI000In.putField("A_ENG_COLUMN_NAME" , rsCol.get(i, "A_ENG_COLUMN_NAME")); 
+				dsI000In.putField("A_KOR_COLUMN_NAME" , rsCol.get(i, "A_KOR_COLUMN_NAME")); 
+				dsI000In.putField("A_DATA_TYPE"       , rsCol.get(i, "A_DATA_TYPE"      )); 
+				dsI000In.putField("A_LENGTH1"         , rsCol.get(i, "A_LENGTH1"        )); 
+				dsI000In.putField("A_LENGTH2"         , rsCol.get(i, "A_LENGTH2"        )); 
+				dsI000In.putField("A_PK"              , rsCol.get(i, "A_PK"             )); 
+				dsI000In.putField("MOVE_DEFAULT"      , rsCol.get(i, "MOVE_DEFAULT"     )); 
+				dsI000In.putField("MOVE_YN"           , rsCol.get(i, "MOVE_YN"          )); 
+				dsI000In.putField("MOVE_RULE"         , rsCol.get(i, "MOVE_RULE"        )); 
+				dsI000In.putField("MOVE_SQL"          , rsCol.get(i, "MOVE_SQL"         )); 
+				dsI000In.putField("ALT_EMP_NO"        , rsCol.get(i, "ALT_EMP_NO"       )); 
+				dsI000In.putField("PREE_CDTN"         , rsCol.get(i, "PREE_CDTN"        )); 
+				dsI000In.putField("ALT_DT"            , rsCol.get(i, "ALT_DT"           )); 
+				dsI000In.putField("JOB_OWNER"         , rsCol.get(i, "JOB_OWNER"        )); 
+				dsI000In.putField("CLIENT_OWNER"      , rsCol.get(i, "CLIENT_OWNER"     )); 
+				dsI000In.putField("MOVE_OWNER"        , rsCol.get(i, "MOVE_OWNER"       )); 
+							
+				/*************************************************************
+				 * 처리상태
+				 *************************************************************/
+				if(  "1".equals(requestData.getField("MAP_STAT"))
+				   ||"3".equals(requestData.getField("MAP_STAT")) /*반려*/
+				   ||"4".equals(requestData.getField("MAP_STAT")))/*취소는 원복*/
+				{
+					/*승인*/
+					dsI000In.putField("MAP_STAT"          , "1"); /*반영완료*/
+				}
+				
+				/*************************************************************
+				 * 변경상태
+				 *************************************************************/
+				if("I".equals(rsCol.get(0, "MAP_IUD_FLGCD"))){
+					rsCnt =  dh.updateSql(dsI000In, namespace+"."+"U001");
+					
+					if(rsCnt <=  0) {
+						throw new Exception( namespace+"."+"U001"+" 처리 건수 없음.");
+					}
+				}else if("U".equals(rsCol.get(0, "MAP_IUD_FLGCD"))){
+					rsCnt =  dh.updateSql(dsI000In, namespace+"."+"U001");
+					
+					if(rsCnt <=  0) {
+						throw new Exception( namespace+"."+"U001"+" 처리 건수 없음.");
+					}
+				}else if("D".equals(rsCol.get(0, "MAP_IUD_FLGCD"))){
+					rsCnt =  dh.deleteSql(dsI000In, namespace+"."+"D001");
+					
+					if(rsCnt <=  0) {
+						throw new Exception( namespace+"."+"D001"+" 처리 건수 없음.");
+					}
+				}
+				
+				/*************************************************************
+				 * 이력 변경
+				 *************************************************************/
+				dsI000In.putField("CHNG_DT_SEQ"  , requestData.getField("CHNG_DT_SEQ"));
+//				dsI000In.putField("CHNG_DT"      , requestData.getField("CHNG_DT")); 
+//				dsI000In.putField("CHNG_SEQ"     , requestData.getField("CHNG_SEQ")); 
+				dsI000In.putField("MAP_STAT"     , requestData.getField("MAP_STAT")); /*반영완료*/
+				
+				rsCnt =  dh.updateSql(dsI000In, namespace+"."+"U002");
 				
 				if(rsCnt <=  0) {
 					throw new Exception( namespace+"."+"U001"+" 처리 건수 없음.");
 				}
-			}else if("U".equals(rsCol.get(0, "MAP_IUD_FLGCD"))){
-				rsCnt =  dh.updateSql(dsI000In, namespace+"."+"U001");
-				
-				if(rsCnt <=  0) {
-					throw new Exception( namespace+"."+"U001"+" 처리 건수 없음.");
-				}
-			}else if("D".equals(rsCol.get(0, "MAP_IUD_FLGCD"))){
-				rsCnt =  dh.deleteSql(dsI000In, namespace+"."+"D001");
-				
-				if(rsCnt <=  0) {
-					throw new Exception( namespace+"."+"D001"+" 처리 건수 없음.");
-				}
-			}
-			
-			/*************************************************************
-			 * 이력 변경
-			 *************************************************************/
-			dsI000In.putField("CHNG_DT"      , requestData.getField("CHNG_DT")); 
-			dsI000In.putField("CHNG_SEQ"     , requestData.getField("CHNG_SEQ")); 
-			dsI000In.putField("MAP_STAT"     , requestData.getField("MAP_STAT")); /*반영완료*/
-			
-			rsCnt =  dh.updateSql(dsI000In, namespace+"."+"U002");
-			
-			if(rsCnt <=  0) {
-				throw new Exception( namespace+"."+"U001"+" 처리 건수 없음.");
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
