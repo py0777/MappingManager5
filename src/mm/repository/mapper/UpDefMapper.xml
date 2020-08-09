@@ -354,12 +354,7 @@ INSERT /*mm.repository.mapper.UpDefMapper.I002*/
 , AF_PREE_CDTN             
 , BF_ALT_DT                
 , AF_ALT_DT                
-, BF_JOB_OWNER             
-, AF_JOB_OWNER             
-, BF_CLIENT_OWNER          
-, AF_CLIENT_OWNER          
-, BF_MOVE_OWNER            
-, AF_MOVE_OWNER            
+ 
 , MAP_STAT
 , MAP_IUD_FLGCD )
 VALUES
@@ -425,12 +420,6 @@ VALUES
 , #{AF_PREE_CDTN}
 , #{BF_ALT_DT}
 , #{AF_ALT_DT}
-, #{BF_JOB_OWNER}
-, #{AF_JOB_OWNER}
-, #{BF_CLIENT_OWNER}
-, #{AF_CLIENT_OWNER}
-, #{BF_MOVE_OWNER}
-, #{AF_MOVE_OWNER}
 , #{MAP_STAT}
 , #{MAP_IUD_FLGCD})
 

@@ -36,10 +36,7 @@ SELECT B.CHNG_DT               AS CHNG_DT
      , B.BF_MOVE_SQL           AS MOVE_SQL          
      , B.BF_ALT_EMP_NO         AS ALT_EMP_NO        
      , B.BF_PREE_CDTN          AS PREE_CDTN         
-     , B.BF_ALT_DT             AS ALT_DT            
-     , B.BF_JOB_OWNER          AS JOB_OWNER         
-     , B.BF_CLIENT_OWNER       AS CLIENT_OWNER      
-     , B.BF_MOVE_OWNER            AS MOVE_OWNER       
+     , B.BF_ALT_DT             AS ALT_DT
      , B.MAP_STAT              AS MAP_STAT         
      , B.MAP_IUD_FLGCD      AS MAP_IUD_FLGCD    
      , CASE WHEN B.MAP_STAT ='1' THEN '반영완료'
@@ -302,32 +299,7 @@ SELECT A.ID
 		  AND  CHNG_SEQ = ${CHNG_SEQ}
 		  AND  (IFNULL(BF_PREE_CDTN,'') <> IFNULL(AF_PREE_CDTN,'') )
 		UNION ALL
-		SELECT 'JOB_OWNER'  AS ID
-		      ,BF_JOB_OWNER AS BF_CHG
-		      ,AF_JOB_OWNER AS AF_CHG
-		FROM   META_TABLE_MAP_HST 
-		WHERE  ID = ID
-		  AND  CHNG_DT = '${CHNG_DT}'
-		  AND  CHNG_SEQ = ${CHNG_SEQ}
-		  AND  (IFNULL(BF_JOB_OWNER,'') <> IFNULL(AF_JOB_OWNER,'') )
-		UNION ALL
-		SELECT 'CLIENT_OWNER'  AS ID
-		      ,BF_CLIENT_OWNER AS BF_CHG
-		      ,AF_CLIENT_OWNER AS AF_CHG
-		FROM   META_TABLE_MAP_HST 
-		WHERE  ID = ID
-		  AND  CHNG_DT = '${CHNG_DT}'
-		  AND  CHNG_SEQ = ${CHNG_SEQ}
-		  AND  (IFNULL(BF_CLIENT_OWNER,'') <> IFNULL(AF_CLIENT_OWNER,'') )
-		UNION ALL
-		SELECT 'MOVE_OWNER'  AS ID
-		      ,BF_MOVE_OWNER AS BF_CHG
-		      ,AF_MOVE_OWNER AS AF_CHG
-		FROM   META_TABLE_MAP_HST 
-		WHERE  ID = ID
-		  AND  CHNG_DT = '${CHNG_DT}'
-		  AND  CHNG_SEQ = ${CHNG_SEQ}
-		  AND  (IFNULL(BF_MOVE_OWNER,'') <> IFNULL(AF_MOVE_OWNER,'') )
+		
  ) A 
      ]]>
 	</select>		
@@ -667,10 +639,7 @@ SELECT CHNG_DT
      , AF_MOVE_SQL            AS MOVE_SQL          
      , AF_ALT_EMP_NO          AS ALT_EMP_NO        
      , AF_PREE_CDTN           AS PREE_CDTN         
-     , AF_ALT_DT              AS ALT_DT            
-     , AF_JOB_OWNER           AS JOB_OWNER         
-     , AF_CLIENT_OWNER        AS CLIENT_OWNER      
-     , AF_MOVE_OWNER          AS MOVE_OWNER        
+     , AF_ALT_DT              AS ALT_DT
      , MAP_STAT
      , MAP_IUD_FLGCD
   FROM META_TABLE_MAP_HST
@@ -709,10 +678,7 @@ SET    MAP_SORT          = IFNULL( ${MAP_SORT}           ,MAP_SORT           )
      , MOVE_SQL          = IFNULL( #{MOVE_SQL}          ,MOVE_SQL           ) 
      , ALT_EMP_NO        = IFNULL( #{ALT_EMP_NO}        ,ALT_EMP_NO         ) 
      , PREE_CDTN         = IFNULL( #{PREE_CDTN}         ,PREE_CDTN          ) 
-     , ALT_DT            = IFNULL( #{ALT_DT}            ,ALT_DT             ) 
-     , JOB_OWNER         = IFNULL( #{JOB_OWNER}         ,JOB_OWNER          ) 
-     , CLIENT_OWNER      = IFNULL( #{CLIENT_OWNER}      ,CLIENT_OWNER       ) 
-     , MOVE_OWNER        = IFNULL( #{MOVE_OWNER}        ,MOVE_OWNER         ) 
+     , ALT_DT            = IFNULL( #{ALT_DT}            ,ALT_DT             )
      , MAP_STAT          = IFNULL( #{MAP_STAT}          ,MAP_STAT           ) 
      , MAP_IUD_FLGCD     = IFNULL( #{MAP_IUD_FLGCD}     ,MAP_IUD_FLGCD      )
 WHERE ID   = ${ID}
