@@ -73,7 +73,7 @@
       scrollY: true,
       heightResizable: true,
       minBodyHeight: 300,
-      rowHeaders: ['radio','rowNum'],
+      rowHeaders: ['checkbox','rowNum'],
       columns: [  
 		  {  title: '변경일자', name: 'CHNG_DT'},
 		  {  title: '변경상태', name: 'MAP_IUD_FLGNM'},
@@ -224,13 +224,22 @@
     
     /*승인*/
     $('#btn-approve').on('click', function() {
+    	var gridList_chngDt = [];
+    	var gridList_chngSeq = [];
     	var Prams = '';
-    	alert(grid.getValue(grid.getCheckedRowKeys(),'CHNG_DT'));
+    	/*alert(grid.getValue(grid.getCheckedRowKeys(),'CHNG_DT'));*/
+    	
+    	for(var i = 0; i < grid.getCheckedRowKeys().length; i++){
+    		gridList_chngDt[i]= grid.getValue(grid.getCheckedRowKeys()[i], 'CHNG_DT');
+    		gridList_chngSeq[i]= grid.getValue(grid.getCheckedRowKeys()[i], 'CHNG_SEQ');
+    	}
     	
     	Prams +='&MAP_STAT='+ '1';
-    	Prams +='&CHNG_DT='+ grid.getValue(grid.getCheckedRowKeys(),'CHNG_DT');
-    	Prams +='&CHNG_SEQ='+ grid.getValue(grid.getCheckedRowKeys(),'CHNG_SEQ');
-    	
+    	/*Prams +='&CHNG_DT='+ grid.getValue(grid.getCheckedRowKeys(),'CHNG_DT');
+    	Prams +='&CHNG_SEQ='+ grid.getValue(grid.getCheckedRowKeys(),'CHNG_SEQ');*/
+    	Prams +='&CHNG_DT='+ gridList_chngDt;
+    	Prams +='&CHNG_SEQ='+ gridList_chngSeq;
+    	alert("Prams \n" +  Prams);
     	$.ajax({
             url:"./resources/restapi/preServ",
             type:'POST',
